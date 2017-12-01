@@ -11116,6 +11116,3326 @@ dc.selectMenu = function (parent, chartGroup) {
     return _chart.anchor(parent, chartGroup);
 };
 
+  dc.barChartOrdinal = function (parent, chartGroup) {
+    var _chart = dc.marginMixin(dc.baseMixin({}));
+    var _g;
+    var xScale;
+    var yScale;
+    var _xAxisLabel;
+    var _yAxisLabel;
+    var _colors;
+  
+    // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var buildOut = function () {
+      var offsets = {};
+      return function (d, y0, y) {
+        var current = offsets[d.x];
+        if (!current) {
+          current = [0, 0];
+        }
+        if (y >= 0) {
+          d.y0 = current[0];
+          d.y = y;
+          current[0] += y;
+        } else {
+          d.y0 = current[1] + y;
+          d.y = y;
+          current[1] += y;
+        }
+  
+        offsets[d.x] = current;
+      };
+    };
+  
+    _chart.colors = function (colors) {
+      _colors = colors;
+      return _chart;
+    };
+  
+    _chart.data(function (group) {
+      var dataset = group.map(function (d) {
+        return d.key[1].map(function (o, i) {
+                // Structure it so that your numeric
+                // axis (the stacked amount) is y
+          return {
+            x: o.title,
+            y: o.value,
+            z: d.key[0]
+          };
+        });
+      });
+      var stack = d3.layout.stack().out(buildOut());
+  
+      stack(dataset);
+  
+      dataset = dataset.map(function (group) {
+        return group.map(function (d) {
+                  // Invert the x and y values, and y0 becomes x0
+          return {
+            x: d.y,
+            y: d.x,
+            x0: d.y0,
+            z: d.z
+          };
+        });
+      });
+  
+      return dataset;
+    });
+  
+    _chart.label(function (d) {
+      return dc.utils.printSingleValue(d.x0 + d.x);
+    }, false);
+  
+    _chart._doRender = function () {
+      _chart.resetSvg();
+      _g = _chart.svg();
+      drawChart();
+      return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+      var data = _chart.data();
+      updateValues(data);
+      return _chart;
+    };
+  
+    _chart.xAxisLabel = function (title) {
+      _xAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.yAxisLabel = function (title) {
+      _yAxisLabel = title;
+      return _chart;
+    };
+  
+    function updateValues (_chartData) {
+      var _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+      _g.selectAll('rect')
+              .transition()
+              .duration(_chart.transitionDuration())
+              .attr('y', function (d) {
+                return yScale(d.x0 + Math.abs(d.x));
+              })
+              .attr('height', function (d) {
+                return yScale(d.x0) - yScale(d.x0 + Math.abs(d.x));
+              });
+  
+          // move x-axis text to the bottom of the chart
+      _g
+              .selectAll('.x.axis text')
+              .attr('dy', _chartHeight - yScale(0));
+    }
+  
+    function drawChart () {
+          // Get your data
+      var data = _chart.data();
+      var margins = _chart.margins();
+      var height = _chart.height();
+      var width = _chart.width();
+      var _colorScale = _colors;
+      var _chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
+      var _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+      _chart.title(function (d) {
+        return d.z;
+      });
+  
+      // Put all drawing methods here
+      var _chartArea = _g
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+  
+      var xMin = d3.min(data, function (group) {
+        return d3.min(group, function (d) {
+          return d.x0;
+        });
+      });
+      var xMax = d3.max(data, function (group) {
+        return d3.max(group, function (d) {
+          return d.x + d.x0;
+        });
+      });
+      var domain = data[0].map(function (d) {
+        return d.y;
+      });
+  
+      yScale = d3.scale.linear()
+        .domain([xMax, xMin])
+        .range([0, height - margins.top - margins.bottom]);
+      xScale = d3.scale.ordinal()
+        .domain(domain)
+        .rangeRoundBands([0, width - margins.left - margins.right], 0.1);
+  
+      var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom');
+      var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left');
+  
+      var chartGroup = _chartArea.selectAll('.chartGroup')
+        .data(data)
+        .enter()
+        .append('g');
+  
+      chartGroup.selectAll('rect')
+        .data(function (d) {
+          return d;
+        })
+        .enter()
+        .append('rect')
+        .style('fill', function (d) {
+          return _colorScale(d.z);
+        })
+        .attr('y', function (d) {
+          return yScale(0);
+        })
+        .attr('x', function (d, i) {
+          return xScale(d.y);
+        })
+        .attr('width', function (d) {
+          return xScale.rangeBand();
+        })
+        .attr('height', function (d) {
+          return 0;
+        })
+        .append('svg:title').text(function (d) {
+          return d.z + ': ' + d.x;
+        });
+  
+      // X axis title
+      _chartArea.append('g')
+        .attr('class', 'x-axis-label x-label')
+        .append('text')
+        .attr('x', -_chart.margins().right + (_chartWidth / 2))
+        .attr('y', _chartHeight + _chart.margins().bottom - 10)
+        .text(_xAxisLabel);
+  
+      // Y axis title
+      _chartArea.append('g')
+        .attr('class', 'y-axis-label y-label')
+        .append('text')
+        .attr('x', -(_chartHeight / 2))
+        .attr('y', -_chart.margins().left + 15)
+        .attr('transform', 'rotate(-90)')
+        .text(_yAxisLabel);
+  
+      // Add axis
+      _chartArea.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + yScale(0) + ')')
+        .call(xAxis);
+  
+      _chartArea.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .selectAll('text')
+        .attr('dy', '0.1em')
+        .style('text-anchor', 'end');
+  
+      updateValues(data);
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+  };
+  
+  /**
+   * Concrete grouped bar chart implementation.
+   *
+   * @name groupedBarChart
+   * @param {String|node|d3.selection} parent - Any valid
+   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+   * @return {dc.groupedBarChart}
+   */
+  dc.groupedBarChart = function (parent, chartGroup) {
+    var _g;
+  
+    var _width = 100;
+    var _height = 100;
+  
+    var _chartWidth = _width;
+    var _chartHeight = _height;
+  
+    var _chart = dc.marginMixin(dc.baseMixin({}));
+  
+      // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var _valueLabelFormat = d3.format(',.0f');
+    var _yAxisLabelFormat = d3.format(',.0f');
+    var _xAxisLabel;
+    var _yAxisLabel;
+    var _yAxisMinValue = 0;
+    var _yAxisMaxValue;
+    var _chartArea;
+    var _chartData;
+    var _groupNames;
+    var _yScale;
+    var _colors;
+    var _highlightVariables = [];
+    var _highlightColor = '#ff0000';
+  
+    _chart.highlightColor = function (highlightColor) {
+      _highlightColor = highlightColor;
+      return _chart;
+    };
+  
+    _chart.highlightVariables = function (highlightVariables) {
+      _highlightVariables = highlightVariables;
+      return _chart;
+    };
+  
+    var _seriesSort = function (d) {
+      return d;
+    };
+  
+    _chart.colors = function (colorFunction) {
+      if ($.isFunction(colorFunction)) {
+        _colors = colorFunction;
+      }
+      return _chart;
+    };
+  
+    _chart.yAxisLabelFormat = function (labelFmt) {
+      if (labelFmt !== undefined) {
+        _yAxisLabelFormat = labelFmt;
+      } else {
+        return _yAxisLabelFormat;
+      }
+      return _chart;
+    };
+  
+    _chart.yAxisMinValue = function (value) {
+      if (value) {
+        _yAxisMinValue = value;
+      }
+      return _chart;
+    };
+  
+    _chart.yAxisMaxValue = function (value) {
+      if (value) {
+        _yAxisMaxValue = value;
+      }
+      return _chart;
+    };
+  
+    var _valueAccessor = function (d) {
+      return d.value;
+    };
+  
+    _chart.valueAccessor = function (valueAccessor) {
+      if (valueAccessor === undefined) {
+        return _valueAccessor;
+      } else {
+        _valueAccessor = valueAccessor;
+      }
+      return _chart;
+    };
+  
+    _chart.width = function (width) {
+      if (width === undefined) {
+        return _width;
+      } else {
+        _width = width;
+      }
+      return _chart;
+    };
+  
+    _chart.height = function (height) {
+      if (height === undefined) {
+        return _height;
+      } else {
+        _height = height;
+      }
+      return _chart;
+    };
+  
+    _chart.xAxisLabel = function (title) {
+      _xAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.yAxisLabel = function (title) {
+      _yAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.seriesSort = function (seriesSort) {
+      if ($.isFunction(seriesSort)) {
+        _seriesSort = seriesSort;
+      } else {
+        return _seriesSort;
+      }
+    };
+  
+    _chart.parseGroup = function (inputGroup) {
+      var tmpObj = {};
+      var keys = [];
+      var subKeys = [];
+      var _data = [];
+  
+      inputGroup.all()
+              .map(function (d) {
+                if (keys.indexOf(d.key[0]) === -1) {
+                  keys.push(d.key[0]);
+                }
+                if (subKeys.indexOf(d.key[1]) === -1) {
+                  subKeys.push(d.key[1]);
+                }
+                tmpObj[d.key[0]] = tmpObj[d.key[0]] || {};
+                tmpObj[d.key[0]][d.key[1]] = {
+                  value: _chart.valueAccessor()(d),
+                  order: d.key[3]
+                };
+              });
+  
+      keys.map(function (key) {
+        var group = {
+          key: key,
+          groupData: []
+        };
+  
+        subKeys.map(function (subKey) {
+          var item = tmpObj[key][subKey];
+          group.groupData.push({
+            name: subKey,
+            value: item.value,
+            order: item.order
+          });
+        });
+  
+        group.groupData.sort(function (a, b) {
+          if (a.order > b.order) {
+            return 1;
+          } else if (a.order < b.order) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+  
+        _data.push(group);
+      });
+  
+      if (_chart.sortArray) {
+        var result = [];
+        _chart.sortArray.forEach(function (key) {
+          var found = false;
+          _data = _data.filter(function (item) {
+            if (!found && item.key === key) {
+              result.push(item);
+              found = true;
+              return false;
+            } else {
+              return true;
+            }
+          });
+        });
+  
+        _data = result;
+      }
+  
+      return _data;
+    };
+  
+    _chart.data(function (group) {
+      return _chart.parseGroup(group);
+    });
+  
+    function getChartData () {
+      _chartData = _chart.data();
+      if (_chartData.length > 0) {
+        _groupNames = _chartData[0]
+                  .groupData.map(function (d) {
+                    return d.name;
+                  });
+      }
+    }
+  
+    _chart._doRender = function () {
+      _chart.resetSvg();
+      _g = _chart.svg();
+      drawChart();
+      return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+      getChartData();
+      updateValues();
+      return _chart;
+    };
+  
+    function calculateMinMax () {
+      _yAxisMinValue = _yAxisMinValue || 0;
+      _yAxisMaxValue = _yAxisMaxValue || 0;
+  
+      var min = d3.min(_chartData, function (d) {
+        return d3.min(d.groupData, function (d) {
+          return d.value;
+        });
+      });
+  
+      var max = d3.max(_chartData, function (d) {
+        return d3.max(d.groupData, function (d) {
+          return d.value;
+        });
+      });
+  
+      if (min > _yAxisMinValue) {
+        min = _yAxisMinValue;
+      }
+  
+      if (max < _yAxisMaxValue) {
+        max = _yAxisMaxValue;
+      }
+  
+      return {
+        min: min,
+        max: max
+      };
+    }
+  
+    function updateValues () {
+      var chartGroup2 = _chartArea.selectAll('.chartGroup')
+              .data(_chartData);
+  
+      var domain = calculateMinMax();
+  
+      chartGroup2.selectAll('text')
+              .data(function (d) {
+                return d.groupData;
+              })
+              .text(function (d) {
+                if (+d.value > 0) {
+                  return _valueLabelFormat(+d.value);
+                } else {
+                  return '';
+                }
+              })
+              .transition()
+              .duration(_chart.transitionDuration())
+              .attr('y', function (d) {
+                return _yScale(Math.max(0, d.value));
+              })
+              .style('fill', '#000000');
+  
+      chartGroup2.selectAll('rect')
+              .data(function (d) {
+                return d.groupData;
+              })
+              .transition()
+              .duration(_chart.transitionDuration())
+              .attr('y', function (d) {
+                return _yScale(Math.max(0, d.value));
+              })
+              .attr('height', function (d) {
+                return Math.abs(_yScale(d.value - Math.max(0, domain.min)) - _yScale(0));
+              });
+  
+      // move x-axis text to the bottom of the chart
+      if (domain.min < 0) {
+        _chartArea
+          .selectAll('.x.axis text')
+          .attr('dy', _yScale(0));
+      }
+    }
+  
+    function drawChart () {
+      _chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
+  
+      _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+          // Data here
+      getChartData();
+  
+      var domain = calculateMinMax();
+  
+      if (_chartData.length === 0) {
+        return;
+      }
+  
+      var x0 = d3.scale.ordinal()
+              .rangeRoundBands([0, _chartWidth], 0.15);
+  
+      var x1 = d3.scale.ordinal();
+  
+      _yScale = d3.scale.linear()
+              .range([_chartHeight, 0]);
+  
+      _chart.y = function () {
+        return function (value) {
+          return _yScale(value);
+        };
+      };
+  
+      var color = _colors;
+  
+      var xAxis = d3.svg.axis()
+              .scale(x0)
+              .orient('bottom');
+  
+      var yAxis = d3.svg.axis()
+              .scale(_yScale)
+              .orient('left')
+              .tickFormat(_yAxisLabelFormat);
+  
+      _chartArea = _g
+              .attr('width', _chart.width())
+              .attr('height', _chart.height())
+              .append('g')
+              .attr('class', 'chart-body')
+              .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+  
+      x0.domain(_chartData.map(function (d) {
+        return d.key;
+      }));
+  
+      x1.domain(_groupNames)
+              .rangeRoundBands([0,
+                x0.rangeBand()
+              ]);
+  
+      _yScale.domain([
+        domain.min,
+        domain.max
+      ]);
+  
+      // X axis title
+      _chartArea.append('g')
+        .attr('class', 'x-axis-label x-label')
+        .append('text')
+        .attr('x', -_chart.margins().right + (_chartWidth / 2))
+        .attr('y', _chartHeight + _chart.margins().bottom - 10)
+        .text(_xAxisLabel);
+  
+      // Y axis title
+      _chartArea.append('g')
+        .attr('class', 'y-axis-label y-label')
+        .append('text')
+        .attr('x', -(_chartHeight / 2))
+        .attr('y', -_chart.margins().left + 15)
+        .attr('transform', 'rotate(-90)')
+        .text(_yAxisLabel);
+  
+          // Add axis
+      _chartArea.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + _yScale(Math.max(0, domain.min)) + ')')
+        .call(xAxis);
+  
+      _chartArea.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .append('text');
+  
+          // Add group bars
+      var chartGroup = _chartArea.selectAll('.chartGroup')
+        .data(_chartData)
+        .enter()
+        .append('g')
+        .attr('class', 'chartGroup')
+        .attr('transform', function (d) {
+          return 'translate(' + x0(d.key) + ',0)';
+        });
+  
+      chartGroup.selectAll('rect')
+        .data(function (d) {
+          for (var i = 0; i < d.groupData.length; i++) {
+            d.groupData[i].key = d.key;
+          }
+          return d.groupData;
+        })
+        .enter()
+        .append('rect')
+        .style('fill', function (d) {
+          if (_highlightVariables.indexOf(d.key) !== -1) {
+            return _highlightColor;
+          } else {
+            return color(d.name);
+          }
+        })
+        .attr('width', x1.rangeBand())
+        .attr('x', function (d) {
+          return x1(d.name);
+        })
+        .append('title')
+        .text(function (d) {
+          return d.name + ': ' + d.value;
+        });
+      updateValues();
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+  };
+  
+  /**
+   * Concrete grouped row chart implementation.
+   *
+   * @name groupedRowChart
+   * @param {String|node|d3.selection} parent - Any valid
+   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+   * @return {dc.groupedRowChart}
+   */
+  dc.groupedRowChart = function (parent, chartGroup) {
+    var _g;
+  
+    var _width = 100;
+    var _height = 100;
+  
+    var _chartWidth = _width;
+    var _chartHeight = _height;
+  
+    var _chart = dc.marginMixin(dc.baseMixin({}));
+  
+      // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var _valueLabelFormat = d3.format(',.0f');
+    var _xAxisLabelFormat = d3.format(',.0f');
+    var _xAxisLabel;
+    var _yAxisLabel;
+    var _yAxisMinValue = 0;
+    var _yAxisMaxValue;
+    var _yScale1;
+    var _yScale0;
+    var _xAxis;
+    var _yAxis;
+    var _chartArea;
+    var _chartData;
+    var _colors;
+    var _groupNames;
+    var _xScale;
+    var _highlightVariables = [];
+    var _highlightColor = '#ff0000';
+  
+    var _seriesSort = function (d) {
+      return d.name;
+    };
+  
+    var _valueAccessor = function (d) {
+      return d.value;
+    };
+  
+    _chart.highlightVariables = function (highlightVariables) {
+      _highlightVariables = highlightVariables;
+      return _chart;
+    };
+  
+    _chart.highlightColor = function (highlightColor) {
+      _highlightColor = highlightColor;
+      return _chart;
+    };
+  
+    _chart.colors = function (colorScale) {
+      if ($.isFunction(colorScale)) {
+        _colors = colorScale;
+      }
+      return _chart;
+    };
+  
+    _chart.seriesSort = function (seriesSortFunction) {
+      if ($.isFunction(seriesSortFunction)) {
+        _seriesSort = seriesSortFunction;
+      } else {
+        return _seriesSort;
+      }
+    };
+  
+    _chart.xAxisLabelFormat = function (d3FormatString) {
+      if (d3FormatString !== undefined) {
+        _xAxisLabelFormat = d3.format(d3FormatString);
+      } else {
+        return _xAxisLabelFormat;
+      }
+      return _chart;
+    };
+  
+    _chart.valueLabelFormat = function (d3FormatString) {
+      if (d3FormatString !== undefined) {
+        _valueLabelFormat = d3.format(d3FormatString);
+      } else {
+        return _valueLabelFormat;
+      }
+      return _chart;
+    };
+  
+    _chart.valueAccessor = function (valueAccessor) {
+      if (valueAccessor === undefined) {
+        return _valueAccessor;
+      } else {
+        _valueAccessor = valueAccessor;
+      }
+      return _chart;
+    };
+  
+    _chart.width = function (width) {
+      if (width === undefined) {
+        return _width;
+      } else {
+        _width = width;
+      }
+      return _chart;
+    };
+  
+    _chart.height = function (height) {
+      if (height === undefined) {
+        return _height;
+      } else {
+        _height = height;
+      }
+      return _chart;
+    };
+  
+    _chart.xAxisLabel = function (title) {
+      _xAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.yAxisLabel = function (title) {
+      _yAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.yAxisMinValue = function (value) {
+      if (value) {
+        _yAxisMinValue = value;
+      }
+      return _chart;
+    };
+  
+    _chart.yAxisMaxValue = function (value) {
+      if (value) {
+        _yAxisMaxValue = value;
+      }
+      return _chart;
+    };
+  
+    _chart.parseGroup = function (inputGroup) {
+      var tmpObj = {};
+      var keys = [];
+      var subKeys = [];
+      var _data = [];
+  
+      inputGroup.all()
+        .map(function (d) {
+          if (keys.indexOf(d.key[0]) === -1) {
+            keys.push(d.key[0]);
+          }
+          if (subKeys.indexOf(d.key[1]) === -1) {
+            subKeys.push(d.key[1]);
+          }
+          tmpObj[d.key[0]] = tmpObj[d.key[0]] || {};
+          tmpObj[d.key[0]][d.key[1]] = {
+            value: _chart.valueAccessor()(d),
+            order: d.key[3]
+          };
+        });
+  
+      keys.map(function (key) {
+        var group = {
+          key: key,
+          groupData: []
+        };
+  
+        subKeys.map(function (subKey) {
+          var item = tmpObj[key][subKey];
+          group.groupData.push({
+            name: subKey,
+            value: item.value,
+            order: item.order
+          });
+        });
+  
+        group.groupData.sort(function (a, b) {
+          if (a.order > b.order) {
+            return 1;
+          } else if (a.order < b.order) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+  
+        _data.push(group);
+      });
+  
+      if (_chart.sortArray) {
+        var result = [];
+        _chart.sortArray.forEach(function (key) {
+          var found = false;
+          _data = _data.filter(function (item) {
+            if (!found && item.key === key) {
+              result.push(item);
+              found = true;
+              return false;
+            } else {
+              return true;
+            }
+          });
+        });
+  
+        _data = result;
+      }
+  
+      return _data;
+    };
+  
+    _chart.data(function (group) {
+      return _chart.parseGroup(group);
+    });
+  
+    _chart._doRender = function () {
+      _chart.resetSvg();
+      _g = _chart.svg();
+      drawChart();
+      return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+      getChartData();
+      updateValues();
+      return _chart;
+    };
+  
+    function calculateMinMax () {
+      _yAxisMinValue = _yAxisMinValue || 0;
+      _yAxisMaxValue = _yAxisMaxValue || 0;
+  
+      var min = d3.min(_chartData, function (d) {
+        return d3.min(d.groupData, function (d) {
+          return d.value;
+        });
+      });
+  
+      var max = d3.max(_chartData, function (d) {
+        return d3.max(d.groupData, function (d) {
+          return d.value;
+        });
+      });
+  
+      if (min > _yAxisMinValue) {
+        min = _yAxisMinValue;
+      }
+  
+      if (max < _yAxisMaxValue) {
+        max = _yAxisMaxValue;
+      }
+  
+      return {
+        min: min,
+        max: max
+      };
+    }
+  
+    function updateValues () {
+      var chartGroup2 = _chartArea.selectAll('.chartGroup')
+              .data(_chartData);
+  
+      var domain = calculateMinMax();
+  
+      chartGroup2.selectAll('text')
+        .data(function (d) {
+          return d.groupData;
+        })
+        .text(function (d) {
+          if (+d.value > 0) {
+            return _valueLabelFormat(+d.value);
+          } else {
+            return '';
+          }
+        })
+        .transition()
+        .duration(_chart.transitionDuration())
+        .attr('x', function (d) {
+          return _xScale(Math.min(0, d.value));
+        })
+        .style('fill', '#000000');
+  
+      chartGroup2.selectAll('rect')
+        .data(function (d) {
+          return d.groupData;
+        })
+        .attr('width', function (d) {
+          return Math.abs(_xScale(d.value) - _xScale(Math.max(0, domain.min)));
+        });
+  
+      // move y-axis text to the left of the chart
+      if (domain.min < 0) {
+        _chartArea
+          .selectAll('.y.axis text')
+          .attr('dx', -_xScale(0));
+      }
+    }
+  
+    function getChartData () {
+      _chartData = _chart.data();
+      if (_chartData.length > 0) {
+        _groupNames = _chartData[0]
+                  .groupData.map(function (d) {
+                    return d.name;
+                  });
+      }
+    }
+  
+    function drawChart () {
+      _chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
+  
+      _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+      _yScale0 = d3.scale.ordinal()
+        .rangeRoundBands([0, _chartHeight], 0.15);
+  
+      _yScale1 = d3.scale.ordinal();
+  
+      _xScale = d3.scale.linear()
+        .range([0, _chartWidth]);
+  
+      _xAxis = d3.svg.axis()
+        .scale(_xScale)
+        .orient('bottom')
+        .tickFormat(_xAxisLabelFormat);
+  
+      _yAxis = d3.svg.axis()
+        .scale(_yScale0)
+        .orient('left');
+  
+      _chartArea = _g
+        .attr('width', _chart.width())
+        .attr('height', _chart.height())
+        .append('g')
+        .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+  
+      // Data here
+      getChartData();
+  
+      var domain = calculateMinMax();
+  
+      if (_chartData.length === 0) {
+        return;
+      }
+  
+      _yScale0.domain(_chartData.map(function (d) {
+        return d.key;
+      }));
+  
+      _yScale1.domain(_groupNames)
+        .rangeRoundBands([0,
+          _yScale0.rangeBand()
+        ]);
+  
+      _xScale.domain([
+        domain.min,
+        domain.max
+      ]);
+  
+      // X axis title
+      _chartArea.append('g')
+        .attr('class', 'x-axis-label x-label')
+        .append('text')
+        .attr('x', -_chart.margins().right + (_chartWidth / 2))
+        .attr('y', _chartHeight + _chart.margins().bottom - 10)
+        .text(_xAxisLabel);
+  
+      // Y axis title
+      _chartArea.append('g')
+        .attr('class', 'y-axis-label y-label')
+        .append('text')
+        .attr('x', -(_chartHeight / 2))
+        .attr('y', -_chart.margins().left + 15)
+        .attr('transform', 'rotate(-90)')
+        .text(_yAxisLabel);
+  
+      // Add axis
+      _chartArea.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + _chartHeight + ')')
+        .call(_xAxis);
+  
+      _chartArea.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + _xScale(Math.max(0, domain.min)) + ',0)')
+        .call(_yAxis)
+        .selectAll('text')
+        .attr('dy', '0em')
+        .attr('transform', 'rotate(-90)')
+        .style('text-anchor', 'end');
+  
+      // Add group bars
+      var chartGroup = _chartArea.selectAll('.chartGroup')
+        .data(_chartData)
+        .enter()
+        .append('g')
+        .attr('class', 'chartGroup')
+        .attr('transform', function (d) {
+          return 'translate(0, ' + _yScale0(d.key) + ')';
+        });
+  
+      chartGroup.selectAll('rect')
+        .data(function (d) {
+          for (var i = 0; i < d.groupData.length; i++) {
+            d.groupData[i].key = d.key;
+          }
+          return d.groupData;
+        })
+        .enter()
+        .append('rect')
+        .style('fill', function (d) {
+          if (_highlightVariables.indexOf(d.key) !== -1) {
+            return _highlightColor;
+          } else {
+            return _colors(d.name);
+          }
+        })
+        .attr('height', _yScale1.rangeBand())
+        .attr('y', function (d) {
+          return _yScale1(d.name);
+        })
+        .attr('width', function (d) {
+          return 0;
+        })
+        .attr('x', function (d) {
+          return _xScale(Math.min(0, d.value) + Math.max(0, domain.min));
+        })
+        .append('title')
+        .text(function (d) {
+          return d.name + ': ' + d.value;
+        });
+      updateValues();
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+  };
+  
+  /**
+   * Stacked grouped row chart implementation.
+   *
+   * @name groupedRowChart
+   * @param {String|node|d3.selection} parent - Any valid
+   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+   * @return {dc.groupedRowChart}
+   */
+  dc.groupedStackedRowChart = function (parent, chartGroup) {
+    var _chart = dc.marginMixin(dc.baseMixin({ animation: false }));
+    var _g;
+    var xScale;
+    var yScale;
+    var _xAxisLabel;
+    var _yAxisLabel;
+    var _colors;
+  
+    // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var buildOut = function () {
+      var offsets = {};
+      return function (d, y0, y) {
+        var current = offsets[d.x];
+        if (!current) {
+          current = [0, 0];
+        }
+        if (y >= 0) {
+          d.y0 = current[0];
+          d.y = y;
+          current[0] += y;
+        } else {
+          d.y0 = current[1] + y;
+          d.y = y;
+          current[1] += y;
+        }
+  
+        offsets[d.x] = current;
+      };
+    };
+  
+    _chart.colors = function (colors) {
+      _colors = colors;
+      return _chart;
+    };
+  
+    _chart.xAxisLabel = function (title) {
+      _xAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.yAxisLabel = function (title) {
+      _yAxisLabel = title;
+      return _chart;
+    };
+  
+    _chart.data(function (group) {
+      var dataset = group.map(function (d) {
+        return d.key[1].map(function (o, i) {
+                // Structure it so that your numeric
+                // axis (the stacked amount) is y
+          return {
+            x: o.title,
+            y: o.value,
+            z: d.key[0]
+          };
+        });
+      });
+      var stack = d3.layout.stack().out(buildOut());
+  
+      stack(dataset);
+  
+      dataset = dataset.map(function (group) {
+        return group.map(function (d) {
+                  // Invert the x and y values, and y0 becomes x0
+          return {
+            x: d.y,
+            y: d.x,
+            x0: d.y0,
+            z: d.z
+          };
+        });
+      });
+  
+      return dataset;
+    });
+  
+    _chart.label(function (d) {
+      return dc.utils.printSingleValue(d.x0 + d.x);
+    }, false);
+  
+    _chart._doRender = function () {
+      _chart.resetSvg();
+      _g = _chart.svg();
+      drawChart();
+      return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+      var data = _chart.data();
+      updateValues(data);
+      return _chart;
+    };
+  
+    function updateValues (_chartData) {
+      _g.selectAll('rect')
+        .transition()
+        .duration(_chart.transitionDuration())
+        .attr('x', function (d) {
+          return xScale(d.x0);
+        })
+        .attr('width', function (d) {
+          return Math.abs(xScale(d.x) - xScale(0));
+        });
+  
+      // move y-axis text to the bottom of the chart
+      _g
+        .selectAll('.y.axis text')
+        .attr('dx', -xScale(0));
+    }
+  
+    function drawChart () {
+      // Get your data
+      var data = _chart.data();
+      var margins = _chart.margins();
+      var height = _chart.height();
+      var width = _chart.width();
+      var _colorScale = _colors;
+      var _chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
+      var _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+      _chart.title(function (d) {
+        return d.z;
+      });
+  
+      // Put all drawing methods here
+      var _chartArea = _g
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+  
+      var xMin = d3.min(data, function (group) {
+        return d3.min(group, function (d) {
+          return d.x0;
+        });
+      });
+      var xMax = d3.max(data, function (group) {
+        return d3.max(group, function (d) {
+          return d.x + d.x0;
+        });
+      });
+      var domain = data[0].map(function (d) {
+        return d.y;
+      });
+  
+      xScale = d3.scale.linear()
+                  .domain([xMin, xMax])
+                  .range([0, width - margins.left - margins.right]);
+      yScale = d3.scale.ordinal()
+                  .domain(domain)
+                  .rangeRoundBands([0, height - margins.top - margins.bottom], 0.1);
+  
+      var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom');
+  
+      var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left');
+  
+      var chartGroup = _chartArea.selectAll('.chartGroup')
+        .data(data)
+        .enter()
+        .append('g');
+  
+      chartGroup.selectAll('rect')
+        .data(function (d) {
+          return d;
+        })
+        .enter()
+        .append('rect')
+        .style('fill', function (d) {
+          return _colorScale(d.z);
+        })
+        .attr('x', function (d) {
+          return 0;
+        })
+            .attr('y', function (d, i) {
+              return yScale(d.y);
+            })
+            .attr('height', function (d) {
+              return yScale.rangeBand();
+            })
+            .attr('width', function (d) {
+              return 0;
+            })
+        .append('svg:title').text(function (d) {
+          return d.z + ': ' + d.x;
+        });
+  
+      // X axis title
+      _chartArea.append('g')
+        .attr('class', 'x-axis-label x-label')
+        .append('text')
+        .attr('x', -_chart.margins().right + (_chartWidth / 2))
+        .attr('y', _chartHeight + _chart.margins().bottom - 10)
+        .text(_xAxisLabel);
+  
+      // Y axis title
+      _chartArea.append('g')
+        .attr('class', 'y-axis-label y-label')
+        .append('text')
+        .attr('x', -(_chartHeight / 2))
+        .attr('y', -_chart.margins().left + 15)
+        .attr('transform', 'rotate(-90)')
+        .text(_yAxisLabel);
+  
+      // Add axis
+      _chartArea.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + (height - margins.top - margins.bottom) + ')')
+        .call(xAxis);
+  
+      _chartArea.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + xScale(0) + ',0)')
+        .call(yAxis)
+        .selectAll('text')
+        .attr('dy', '0em')
+        .style('text-anchor', 'end');
+  
+      updateValues(data);
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+  };
+  
+  dc.stackedRowChart = function (parent, chartGroup) {
+    var _chart = dc.marginMixin(dc.baseMixin({}));
+    var _g;
+  
+    // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var buildOut = function () {
+      var offsets = {};
+      return function (d, y0, y) {
+        var current = offsets[d.x];
+        if (!current) {
+          current = [0, 0];
+        }
+        if (y >= 0) {
+          d.y0 = current[0];
+          d.y = y;
+          current[0] += y;
+        } else {
+          d.y0 = current[1] + y;
+          d.y = y;
+          current[1] += y;
+        }
+  
+        offsets[d.x] = current;
+      };
+    };
+  
+    _chart.data(function (group) {
+      // Do this first: Make copy of group data array
+      var tmpData = group.all().slice();
+  
+      var dataset = tmpData.map(function (d) {
+        return d.key[1].map(function (o, i) {
+                // Structure it so that your numeric
+                // axis (the stacked amount) is y
+          return {
+            x: o.title,
+            y: o.value,
+            z: d.key[0]
+          };
+        });
+      });
+      var stack = d3.layout.stack().out(buildOut());
+  
+      stack(dataset);
+  
+      dataset = dataset.map(function (group) {
+        return group.map(function (d) {
+                  // Invert the x and y values, and y0 becomes x0
+          return {
+            x: d.y,
+            y: d.x,
+            x0: d.y0,
+            z: d.z
+          };
+        });
+      });
+  
+      return dataset;
+    });
+  
+    _chart._doRender = function () {
+      _chart.resetSvg();
+      _g = _chart.svg();
+      drawChart();
+      return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+      return _chart;
+    };
+  
+    function drawChart () {
+      // Get your data
+      var data = _chart.data();
+      var height = _chart.height();
+      var width = _chart.width();
+  
+      // Put all drawing methods here
+      var _chartArea = _g
+        .attr('width', _chart.width())
+        .attr('height', _chart.height())
+        .append('g')
+        .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+  
+      var xMax = d3.max(data, function (group) {
+        return d3.max(group, function (d) {
+          return d.x + d.x0;
+        });
+      });
+      var xScale = d3.scale.linear()
+        .domain([0, xMax])
+        .range([0, width]);
+      var domain = data[0].map(function (d) {
+        return d.y;
+      });
+      var yScale = d3.scale.ordinal()
+        .domain(domain)
+        .rangeRoundBands([0, height], 0.1);
+      var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom');
+      var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left');
+      var colours = d3.scale.category10();
+      var groups = _chartArea.selectAll('g')
+        .data(data)
+        .enter()
+        .append('g')
+        .style('fill', function (d, i) {
+          return colours(i);
+        });
+      groups.selectAll('rect')
+        .data(function (d) {
+          return d;
+        })
+        .enter()
+        .append('rect')
+        .attr('x', function (d) {
+          return xScale(d.x0);
+        })
+        .attr('y', function (d, i) {
+          return yScale(d.y);
+        })
+        .attr('height', function (d) {
+          return yScale.rangeBand();
+        })
+        .attr('width', function (d) {
+          return xScale(d.x);
+        })
+        .on('mouseover', function (d) {
+          var xPos = parseFloat(d3.select(this).attr('x')) / 2 + width / 2;
+          var yPos = parseFloat(d3.select(this).attr('y')) + yScale.rangeBand() / 2;
+  
+          d3.select('#tooltip')
+            .style('left', xPos + 'px')
+            .style('top', yPos + 'px')
+            .select('#value')
+            .text(d.x);
+  
+          d3.select('#tooltip').classed('hidden', false);
+        })
+        .on('mouseout', function () {
+          d3.select('#tooltip').classed('hidden', true);
+        });
+  
+      _chartArea.append('g')
+                  .attr('class', 'axis')
+                  .attr('transform', 'translate(0,' + height + ')')
+                  .call(xAxis);
+  
+      _chartArea.append('g')
+                  .attr('class', 'axis')
+                  .call(yAxis);
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+  };
+dc.statColorScales = {
+    /**
+     * Color scale custom for adm-board
+     *
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
+    admOrdinal: function () {
+      return d3.scale.ordinal().range([
+        '#FF0200', '#D9007B', '#FF6700',
+        '#FEFF00', '#00CC05', '#0053CC',
+        '#8B00CC', '#FF0200', '#FFCD00',
+        '#A8E500', '#0098CC'
+      ]);
+    },
+  
+    /**
+     * Color scale from iPodNano apps
+     *
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
+    iPodNano: function () {
+      return d3.scale.ordinal().range([
+        '#8569CF', '#0D9FD8', '#8AD749',
+        '#EECE00', '#F8981F', '#F80E27',
+        '#F640AE', '#E2E2E2', '#787679'
+      ]);
+    },
+  
+    /**
+     * Color scale from Google
+     *
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
+    google: function (highlightSeries, highlightColor) {
+      var cs = d3.scale.ordinal().range([
+        '#3366cc', '#dc3912', '#ff9900', '#109618',
+        '#990099', '#0099c6', '#dd4477', '#66aa00',
+        '#b82e2e', '#316395', '#994499', '#22aa99',
+        '#aaaa11', '#6633cc', '#e67300', '#8b0707',
+        '#651067', '#329262', '#5574a6', '#3b3eac'
+      ]);
+  
+      if (highlightSeries !== undefined && highlightSeries.constructor === Array &&
+          highlightSeries.length > 0 && highlightColor !== undefined) {
+        return function (value) {
+          if (highlightSeries.indexOf(value) !== -1) {
+            return highlightColor;
+          } else {
+            return cs(value);
+          }
+        };
+      } else {
+        return function (value) {
+          return cs(value);
+        };
+      }
+    },
+  
+    plannedActual: function () {
+      return d3.scale.ordinal().domain([
+        'Black',
+        'Planned',
+        'Actual'
+      ]).range([
+        '#000000',
+        '#3366cc',
+        '#dc3912'
+      ]);
+    }
+  };
+dc.statLegend = {
+  pieLegend: function (chart, _options) {
+    var legendHeight = this.calcLegendHeight(chart, _options);
+
+    var cy = legendHeight + chart.radius();
+    var legendWidth = this.calcLegendWidth(_options);
+    var legendItemWidth = this.calcLegendItemWidth(_options);
+
+    chart
+      .cy(cy)
+      .legend(dc.legend()
+        .y(_options.margins.top)
+        .x(_options.margins.left)
+        .itemHeight(_options.legendItemHeight)
+        .gap(_options.legendGap)
+        .autoItemWidth(_options.autoItemWidth)
+        .legendWidth(legendWidth)
+        .itemWidth(legendItemWidth)
+        .horizontal(_options.horizontalLegend)
+      );
+  },
+
+  legend: function (chart, _options, override) {
+    if (override) {
+      this.overrideLegendables(chart, _options);
+    }
+
+    var legendHeight = this.calcLegendHeight(chart, _options);
+    var legendWidth = this.calcLegendWidth(_options);
+    var legendItemWidth = this.calcLegendItemWidth(_options);
+
+    chart
+      .legend(dc.legend()
+        .y(_options.margins.top)
+        .x(_options.margins.left - _options.chartConfig.yAxisLabelPadding)
+        .itemHeight(_options.legendItemHeight)
+        .gap(_options.legendGap)
+        .autoItemWidth(_options.autoItemWidth)
+        .legendWidth(legendWidth)
+        .itemWidth(legendItemWidth)
+        .horizontal(_options.horizontalLegend)
+      );
+
+    chart.margins().top = legendHeight + chart.margins().top * 2;
+  },
+
+  overrideLegendables: function (chart, _options) {
+    chart.legendables = function () {
+      var data = chart.data();
+      if (data.length > 0) {
+        return data[0].groupData.map(function (d) {
+          d.chart = chart;
+          d.color = _options.colors(d.name);
+          return d;
+        });
+      }
+      return [];
+    };
+    chart.isLegendableHidden = function () { return false; };
+  },
+
+  calcLegendHeight: function (chart, _options) {
+    var legendables = chart.legendables();
+    var count = legendables ? legendables.length : 0;
+    if (_options.horizontalLegend) {
+      count = Math.ceil(count / 2);
+    }
+    return (_options.legendItemHeight + _options.legendGap) * count;
+  },
+
+  calcLegendWidth: function (_options) {
+    return _options.horizontalLegend ? (_options.legendWidth / 2) : _options.legendWidth;
+  },
+
+  calcLegendItemWidth: function (_options) {
+    return _options.horizontalLegend ? (_options.legendItemWidth / 2) * 0.9 : _options.legendItemWidth;
+  }
+};
+dc.statDiagrams = {
+  monthMap: {
+    '1': 'J',
+    '2': 'F',
+    '3': 'M',
+    '4': 'A',
+    '5': 'M',
+    '6': 'J',
+    '7': 'J',
+    '8': 'A',
+    '9': 'S',
+    '10': 'O',
+    '11': 'N',
+    '12': 'D'
+  },
+
+  scaleWidth: function (width, offset) {
+    return offset * width / 100;
+  },
+
+  scaleHeight: function (height, offset) {
+    return offset * height / 100;
+  },
+
+  /**
+   * Internal id counter for numbering objects
+   *
+   * @type Number
+   * @private
+   * @ignore
+   */
+  objectId: 0,
+
+  options: {
+    minHeight: 300,
+    xAxisTitle: '',
+    yAxisTitle: '',
+    margins: {
+      'top': 60,
+      'right': 20,
+      'bottom': 40,
+      'left': 40
+    },
+    legend: true,
+    autoItemWidth: false,
+    legendItemHeight: 15,
+    legendGap: 5,
+    colors: dc.statColorScales.google(),
+    horizontalLegend: true,
+    xAxisLabelRotate: false,
+    xAxisLabelOffsetX: 0,
+    xAxisLabelOffsetY: 0,
+    valueAccessor: function (d) {
+      return d.value;
+    },
+    keyAccessor: function (d) {
+      return d.key;
+    },
+    seriesAccessor: function (d) {
+      return d.value;
+    }
+  },
+
+  /**
+   * Compares elements in an array of objects based on the properties key[0] and key[1]
+   *
+   * @param {Object} a Object with array property named key with two elements
+   * @param {Object} b Same as a
+   * @return {Number} -1 if a is smaller than b, 1 if a is
+   * greater than b and 0 if there is no difference
+   */
+  compare2DKey: function (a, b) {
+    var am = a.key.split('|');
+    var bm = b.key.split('|');
+
+    if (am.length < 2 || bm.length < 2) {
+      return 0;
+    }
+
+    var ak = am[0];
+    var bk = bm[0];
+    var ask = am[1];
+    var bsk = bm[1];
+
+    if (ak < bk) {
+      return -1;
+    } else if (ak > bk) {
+      return 1;
+    } else if (+ask < +bsk) {
+      return -1;
+    } else if (+ask > +bsk) {
+      return 1;
+    } else {
+      return 0;
+    }
+  },
+
+  /**
+   * Create a new quasi group omitting the group with the key ignore
+   *
+   * @param {crossfilter.group} group A crossfilter group
+   * @param {String} keyValue [description]
+   * @return {crossfilter.group} Quasi crossfilter group object implementing .all() method
+   */
+  groupStripKey: function (group, keyValue) {
+    return {
+      all: function () {
+        var tmpGroup = group.all();
+
+        for (var i = 0; i < tmpGroup.length; i++) {
+          if (tmpGroup[i].key === keyValue) {
+            tmpGroup.splice(i, 1);
+            break;
+          }
+        }
+
+        return tmpGroup;
+      }
+    };
+  },
+
+  /**
+   * Creates a quasi dimension with a running sum based on the value accessor function specified
+   *
+   * @param {crossfilter.group} group A group that must implement the function group.all()
+   * @param {String} keyName The name of the running sum property
+   * @param {function} valueAccessor A function to retrieve the value that the running sum shall be based on
+   * @return {crossfilter.group} A quasi group that only implements the function group.all()
+   */
+  getRunningSumFor2DKeyGroup: function (group, keyName, valueAccessor) {
+    if (keyName === undefined) {
+      keyName = 'runningSum';
+    }
+
+    if (valueAccessor === undefined) {
+      valueAccessor = function (d) {
+        return d.value;
+      };
+    }
+
+    return {
+      all: function () {
+        var runningSum = 0;
+        var prevKey0 = '';
+        var data = group.all();
+
+        for (var i = 0; i < data.length; i++) {
+          var currKey = data[i].key.split('|')[0];
+
+          if (currKey !== prevKey0) {
+            runningSum = 0;
+          }
+
+          var currentValue = valueAccessor(data[i]);
+
+          runningSum += isNaN(currentValue) ? 0 : currentValue;
+
+          data[i][keyName] = runningSum;
+
+          prevKey0 = currKey;
+        }
+
+        return data;
+      }
+    };
+  },
+
+  dropDownFilterProjStatus: function (title, selector, selectedStatus, callbackFunction) {
+    var statusCodes = [
+      'Execution',
+      'Liability',
+      'Completed',
+      'Closed'
+    ];
+
+    var controlId = 'ddf' + this.objectId++;
+
+    var select = $('<select/>')
+          .attr('id', controlId)
+          .addClass('form-control');
+
+    var label = $('<label/>')
+          .attr('for', controlId)
+          .text(title);
+
+    for (var i = 0; i < statusCodes.length; i++) {
+      var o = $('<option/>')
+              .attr('value', statusCodes[i])
+              .text(statusCodes[i]);
+      select.append(o);
+    }
+
+    select.val(selectedStatus);
+
+      // Add change event
+    select.on('change', function () {
+      callbackFunction($(this).val());
+    });
+
+    $(selector)
+          .empty()
+          .append(label)
+          .append(select)
+          .addClass('form-group');
+  },
+
+  dropDownFilterYear: function (title, selector, years, selectedYear, callbackFunction) {
+    var controlId = 'ddf' + this.objectId++;
+    var select = $('<select/>')
+          .attr('id', controlId)
+          .addClass('form-control');
+    var label = $('<label/>')
+          .attr('for', controlId)
+          .text(title);
+
+    for (var i = 0; i < years.length; i++) {
+      var o = $('<option/>')
+              .attr('value', years[i])
+              .text(years[i]);
+      select.append(o);
+    }
+
+    select.val(selectedYear);
+
+      // Add change event
+    select.on('change', function () {
+      callbackFunction($(this).val());
+    });
+
+    $(selector)
+          .empty()
+          .append(label)
+          .append(select)
+          .addClass('form-group');
+  },
+
+  /**
+   * Create a dropdown filter for use with a dc visualization
+   *
+   * @param {string} title The title to use for the dropdown
+   * @param {string} selector The $ selector to identify the element
+   * @param {crossfilter.dimension[]} dim A crossfilter dimension referencing data
+   * @param {string} [useKey=false] A flag that determines if the key or the value
+   * is to be used in the filter expression
+   */
+  dropDownFilter: function (title, selector, dim, useKey) {
+    if (useKey === undefined) {
+      useKey = false;
+    }
+
+    var controlId = 'ddf' + this.objectId++;
+    var select = $('<select/>')
+          .attr('id', controlId)
+          .addClass('form-control');
+    var label = $('<label/>')
+          .attr('for', controlId)
+          .text(title);
+    var emptyOption = $('<option/>')
+          .attr('value', '')
+          .text('Not filtered');
+    select.append(emptyOption);
+    var values = dim[0].group()
+          .all();
+    for (var i = 0; i < values.length; i++) {
+      var o = $('<option/>')
+              .attr('value', values[i].value)
+              .text(values[i].key);
+      select.append(o);
+    }
+
+      // Add change event
+    select.on('change', function () {
+      var e = $(this);
+      var key = e.find(':selected')
+              .text();
+      var value = e.val();
+      for (var d = 0; d < dim.length; d++) {
+        if (value === '') {
+          dim[d].filterAll();
+        } else {
+          if (useKey === false) {
+            dim[d].filter(value);
+          } else {
+            dim[d].filter(key);
+          }
+        }
+      }
+      dc.redrawAll();
+    });
+
+    $(selector)
+          .empty()
+          .append(label)
+          .append(select)
+          .addClass('form-group');
+  },
+
+  /**
+   * Callback function for this.dropDownFilter
+   *
+   * callback dropDownFilterCallback
+   * @param {string} key The selected key
+   * @param {string|number} value The selected value
+   */
+
+  /**
+   * A function that returns the initial object for a reduce average
+   * operation in a Crossfilter group
+   *
+   * @returns {Object}
+   */
+  getReduceInitialCountUnique: function () {
+    return {
+      occurrences: [],
+      count: 0,
+      sum: 0
+    };
+  },
+
+  getReduceAddCountUnique: function (countProperty, uniqueProperty) {
+    return function (p, v) {
+      if (p.occurrences.indexOf(v[uniqueProperty]) !== -1) {
+        p.occurences.push(v[uniqueProperty]);
+        p.count++;
+        p.sum += v[countProperty];
+      }
+      return p;
+    };
+  },
+
+  getReduceRemoveCountUnique: function (countProperty, uniqueProperty) {
+    return function (p, v) {
+      var i = p.occurrences.indexOf(v[uniqueProperty]);
+      if (i !== -1) {
+        p.occurences.splice(i, 1);
+        p.count--;
+        p.sum -= v[countProperty];
+      }
+      return p;
+    };
+  },
+
+  /**
+   * Perform a reduce count unique operation on a crossfilter group
+   *
+   * @param {crossfilter.group} group Group to be processed
+   * @param {String} countProperty Name of property to count/sum
+   * @param {String} uniqueProperty Name of property to check for uniqueness
+   * @return {crossfilter.group} New, reduced group
+   */
+  reduceCountUnique: function (group, countProperty, uniqueProperty) {
+    return group.reduce(
+          this.getReduceAddCountUnique(countProperty, uniqueProperty),
+          this.getReduceRemoveCountUnique(countProperty, uniqueProperty),
+          this.getReduceInitialCountUnique);
+  },
+
+  /**
+   * A function that returns the initial object for a reduce average
+   * operation in a Crossfilter group
+   *
+   * @returns {Object}
+   */
+  getReduceInitialAvg: function () {
+    return {
+      count: 0,
+      sum: 0,
+      avg: 0
+    };
+  },
+
+  /**
+   * A function that returns the initial object for a reduce sum
+   * operation in a Crossfilter group
+   *
+   * @returns {Number}
+   */
+  getReduceInitialSum: function () {
+    return 0;
+  },
+
+  /**
+   * Creates a reduce sum function
+   *
+   * @param {String} fieldName [description]
+   * @return {Object} Update reduce initial sum
+   */
+  getReduceAddSum: function (fieldName) {
+    return function (p, v) {
+      p += (+v[fieldName]);
+      return p;
+    };
+  },
+
+  getReduceRemoveSum: function (fieldName) {
+    return function (p, v) {
+      p -= (+v[fieldName]);
+      return p;
+    };
+  },
+
+  /**
+   * A function that returns the initial object for a reduce average
+   * operation in a Crossfilter group
+   *
+   * @param {function} includeIfTrue A function that evaluates if the value is to be ignored or not
+   * @returns {Object}
+   */
+  getReduceInitialAvgFunc: function (includeIfTrue) {
+    if (includeIfTrue === undefined) {
+      includeIfTrue = function () {
+        return true;
+      };
+    }
+    return function () {
+      return {
+        includeIfTrue: includeIfTrue,
+        count: 0,
+        sum: 0,
+        avg: 0
+      };
+    };
+  },
+
+  /**
+   * Creates a Crossfilter reduce add function for calculating averages
+   *
+   * @param {type} propertyName Name of a property that exist in each object
+   * @returns {function}
+   */
+  getReduceAddAvg: function (propertyName) {
+    return function (p, v) {
+      if ((p.includeIfTrue === undefined || p.includeIfTrue(v)) && !isNaN(v[propertyName])) {
+        ++p.count;
+        p.sum += v[propertyName];
+      }
+      p.avg = p.sum === 0 ? 0 : p.sum / p.count;
+      return p;
+    };
+  },
+
+  /**
+   * Creates a Crossfilter reduce remove function for calculating averages
+   *
+   * @param {type} propertyName Name of a property that exist in each object
+   * @returns {function}
+   */
+  getReduceRemoveAvg: function (propertyName) {
+    return function (p, v) {
+      if ((p.includeIfTrue === undefined || p.includeIfTrue(v)) && !isNaN(v[propertyName])) {
+        --p.count;
+        p.sum -= v[propertyName];
+      }
+      p.avg = p.sum === 0 ? 0 : p.sum / p.count;
+      return p;
+    };
+  },
+
+  /**
+   * Perform a reduce average operation on a crossfilter group
+   *
+   * @param {crossfilter.group} group Group to be averaged
+   * @param {String} property Name of property to average
+   * @return {crossfilter.group} New, reduced group
+   */
+  reduceAvg: function (group, property) {
+    return group.reduce(
+          this.getReduceAddAvg(property),
+          this.getReduceRemoveAvg(property),
+          this.getReduceInitialAvg);
+  },
+
+  referenceLine: function (chart, value, text, allign) {
+    chart.on('renderlet', function (chart) {
+      var lineData = [{
+        x: 0,
+        y: chart.y()(value)
+      }, {
+        x: chart.width() - chart.margins().left - chart.margins().right,
+        y: chart.y()(value)
+      }];
+
+      var line = d3.svg.line()
+        .x(function (d) { return d.x; })
+        .y(function (d) { return d.y; })
+        .interpolate('linear');
+
+      var chartBody = chart.select('g.chart-body');
+
+      chartBody
+        .selectAll('path.extra')
+        .data([lineData])
+        .enter()
+        .append('path').attr({
+          'class': 'refline',
+          'stroke': '#000',
+          'stroke-width': '1px',
+          'shape-rendering': 'crispEdges'
+        })
+        .attr('d', line);
+
+      if (text) {
+        chartBody
+          .selectAll('text.extra-label')
+          .data([text])
+          .enter()
+          .append('text').attr({
+            'class': 'refline-label',
+            'x': allign === 'start' ? 0 : chart.width() - chart.margins().left - chart.margins().right,
+            'y': chart.y()(value) })
+          .style({
+            'text-anchor': allign || 'end',
+            'startOffset': '50%' })
+          .text(text);
+      }
+    });
+  },
+
+  /**
+   * Create a line chart for 53 weeks
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dimension
+   * @param {crossfilter.group} group
+   * @param {string} yAxisLabel
+   * @param {function} valueAccessor
+   * @returns {dc.chart}
+   */
+  areaChartWeeks: function (domSelector, dimension, group, yAxisLabel, valueAccessor) {
+    return this.areaChartMonths(domSelector, dimension, group, yAxisLabel, valueAccessor, 1, 53);
+  },
+
+  /**
+   * Create a line chart for 12 months
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dimension
+   * @param {crossfilter.group} group
+   * @param {string} yAxisLabel
+   * @param {function} valueAccessor
+   * @returns {dc.chart}
+   */
+  areaChartMonths: function (domSelector, dimension, group, yAxisLabel, valueAccessor) {
+    return this.areaChartMonths(domSelector, dimension, group, yAxisLabel, valueAccessor, 1, 12);
+  },
+
+  /**
+   * Create an area chart for 12 months
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dimension
+   * @param {crossfilter.group} group
+   * @param {string} yAxisLabel
+   * @param {function} [valueAccessor=function] A function that receives a data object as a parameter
+   *   and that should return a single value
+   * @param {number} [min=1]
+   * @param {number} [max=12]
+   * @return {dc.chart} A chart object from dc.js
+   */
+  areaChartLinear: function (domSelector, dimension, group, yAxisLabel, valueAccessor, min, max) {
+    if (valueAccessor === undefined) {
+      valueAccessor = function (d) {
+        return d.value;
+      };
+    }
+
+    if (min === undefined) {
+      min = 1;
+    }
+
+    if (max === undefined) {
+      max = 12;
+    }
+
+    var _dim = this.getNormElemSize(domSelector);
+    var _width = _dim.w;
+
+    return dc.lineChart(domSelector)
+          .transitionDuration(0)
+          .width(_width)
+          .height(Math.round(_width * 0.75))
+          .x(d3.scale.linear()
+              .domain([1, 12]))
+          .margins({
+            left: 60,
+            top: 10,
+            right: 10,
+            bottom: 20
+          })
+          .renderArea(true)
+          .brushOn(true)
+          .clipPadding(10)
+          .yAxisLabel(yAxisLabel)
+          .dimension(dimension)
+          .group(group, 'Planned')
+          .valueAccessor(valueAccessor)
+          .render();
+  },
+
+  /**
+   * Create an area chart with a time x-Axis
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dimension
+   * @param {crossfilter.group} group
+   * @param {string} yAxisLabel
+   * @param {function} valueAccessor A function that receives a data object as a parameter
+   *   and that should return a single value
+   * @return {dc.chart} A chart object from dc.js
+   */
+  areaChartTime: function (domSelector, dimension, group, yAxisLabel, valueAccessor) {
+    var _dim = this.getNormElemSize(domSelector);
+    var _width = _dim.w;
+
+    return dc.lineChart(domSelector)
+          .transitionDuration(0)
+          .width(_width)
+          .height(Math.round(_width * 0.75))
+          .x(d3.scale.linear()
+              .domain([1, 12]))
+          .margins({
+            left: 60,
+            top: 10,
+            right: 10,
+            bottom: 20
+          })
+          .renderArea(true)
+          .brushOn(true)
+          .clipPadding(10)
+          .yAxisLabel(yAxisLabel)
+          .dimension(dimension)
+          .group(group, 'Planned')
+          .valueAccessor(valueAccessor)
+          .render();
+  },
+
+  /**
+   * Create an oridinal bar chart
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dim
+   * @param {crossfilter.group} group
+   * @param {object} [options]
+   * @return {dc.chart} A dc.js chart object
+   */
+  barChartOrdinal: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      aspectRatio: 0.66
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    var chart = dc.barChartOrdinal(domSelector);
+
+    _options.legendWidth = _width;
+    _options.legendItemWidth = _width;
+
+    if (!options.colors) {
+      _options.colors = dc.statColorScales.google();
+    }
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    if (_options.valueLabelFormat !== undefined) {
+      chart.valueLabelFormat(_options.valueLabelFormat);
+    }
+
+    if (_options.xAxisLabelFormat !== undefined) {
+      chart.xAxisLabelFormat(_options.xAxisLabelFormat);
+    }
+
+    if (_options.chartConfig.xAxisLabelPadding) {
+      _options.margins.bottom += _options.chartConfig.xAxisLabelPadding;
+    }
+
+    if (_options.chartConfig.yAxisLabelPadding) {
+      _options.margins.left += _options.chartConfig.yAxisLabelPadding;
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .colors(_options.colors)
+          .xAxisLabel(_options.chartConfig.xAxisLabel)
+          .yAxisLabel(_options.chartConfig.yAxisLabel)
+          .margins(_options.margins);
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+      // overwrite legendables function
+    chart.legendables = function () {
+      return group.map(function (d) {
+        return {
+          name: d.key[0],
+          color: _options.colors(d.key[0]),
+          chart: chart
+        };
+      });
+    };
+
+    if (_options.legend) {
+      dc.statLegend.legend(chart, _options);
+    }
+
+    chart.render();
+
+    if (_options.chartConfig.yAxisLabelAngle != null &&
+      _options.chartConfig.yAxisLabelOffsetX != null &&
+      _options.chartConfig.yAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.y g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.yAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.yAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.yAxisLabelAngle + ')');
+    }
+
+    if (_options.chartConfig.xAxisLabelAngle != null &&
+      _options.chartConfig.xAxisLabelOffsetX != null &&
+      _options.chartConfig.xAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.x g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.xAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.xAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.xAxisLabelAngle + ')')
+              .style('text-anchor', 'end');
+    }
+    return chart;
+  },
+
+  /**
+   * Adds a year filter to filter areas (reloads page)
+   *
+   * @param {string} domSelector
+   * @param {number} from
+   * @param {number} to
+   * @param {crossfilter.dimension[]} dims
+   * @param {function} callback
+   */
+  dropdownFilterYear: function (
+      domSelector,
+      from,
+      to,
+      dims,
+      callback) {
+    var controlId = 'ddf' + this.objectId++;
+    var select = $('<select/>')
+          .attr('id', controlId)
+          .addClass('form-control');
+    var label = $('<label/>')
+          .attr('for', controlId)
+          .text('Filter by year');
+    for (var i = from; i <= to; i++) {
+      var o = $('<option/>')
+              .attr('value', i)
+              .text(i);
+      select.append(o);
+    }
+
+      // Add change event
+    select.on('change', function () {
+      var e = $(this);
+      var value = e.val();
+      callback(value);
+    });
+    $(domSelector)
+          .append(label)
+          .append(select)
+          .addClass('form-group');
+  },
+
+  numberDisplay: function (domSelector, group, options) {
+    var _options = {
+      valueAccessor: function (d) {
+        if (d !== undefined) {
+          return d.value;
+        } else {
+          return null;
+        }
+      },
+      html: {
+        one: '%number',
+        some: '%number',
+        none: '-'
+      },
+      formatNumber: d3.format('0.000')
+    };
+
+    if (options !== undefined) {
+      $.extend(_options, options);
+    }
+
+    var chart = dc.numberDisplay(domSelector)
+          .group(group)
+          .html(_options.html)
+          .valueAccessor(_options.valueAccessor)
+          .formatNumber(_options.formatNumber);
+    return chart.render();
+  },
+
+  /**
+   * Create a line chart with series
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dim A dimension on an array where the first element
+   *   is the series name and the second is the key (x) value
+   * @param {crossfilter.group} group A group value on the dimension
+   * @param {string} yAxisLabel
+   * @param {string} xAxisLabel
+   * @returns {dc.chart};
+   */
+  seriesLineChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      aspectRatio: 1,
+      yAxisTickFormat: d3.format('d'),
+      childOptions: {
+        xyTipsOn: true,
+        renderDataPoints: {}
+      }
+    };
+
+    var _options = {};
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _dim = this.getNormElemSize(domSelector);
+    var _width = _dim.w;
+    var _height = _dim.h;
+    var _refLine = _options.chartConfig.refLine;
+    var _refLineText = _options.chartConfig.refLineText;
+    var _refLineAllign = _options.chartConfig.refLineAllign;
+
+    _options.legendItemWidth = _width;
+    _options.legendWidth = _width;
+
+    var chart = dc.seriesChart(domSelector);
+
+    if (_options.chartConfig.xAxisLabelPadding) {
+      _options.margins.bottom += _options.chartConfig.xAxisLabelPadding;
+    }
+
+    if (_options.chartConfig.yAxisLabelPadding) {
+      _options.margins.left += _options.chartConfig.yAxisLabelPadding;
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .colors(dc.statColorScales.google())
+          .x(_options.x)
+          .xUnits(_options.xUnits)
+          .brushOn(false)
+          .yAxisPadding(-1)
+          .yAxisLabel(_options.chartConfig.xAxisLabel)
+          .xAxisLabel(_options.chartConfig.yAxisLabel)
+          .clipPadding(10)
+          ._rangeBandPadding(1)
+          .dimension(dim)
+          .margins(_options.margins)
+          .group(group)
+          .mouseZoomable(false)
+          .seriesAccessor(_options.seriesAccessor)
+          .keyAccessor(_options.keyAccessor)
+          .valueAccessor(_options.valueAccessor);
+
+    if (_refLine || _refLine === 0) {
+      this.referenceLine(chart, _refLine, _refLineText, _refLineAllign);
+    }
+
+    //let max = _options.chartConfig.yAxisMaxValue;
+    //let min = _options.chartConfig.yAxisMinValue || 0;
+    var max = _options.chartConfig.yAxisMaxValue;
+    var min = _options.chartConfig.yAxisMinValue || 0;
+    dim.filter(function (t) {
+      if (max === undefined) {
+        max = t[2];
+      }
+      if (min === undefined) {
+        min = t[2];
+      }
+      max = t[2] > max ? t[2] : max;
+      min = t[2] < min ? t[2] : min;
+    });
+    chart.y(d3.scale.linear().domain([min, max]));
+
+    if (_options.ordering) {
+      chart.ordering(_options.ordering);
+    }
+
+    if (_options.valueSort) {
+      chart.valueSort(_options.valueSort);
+    }
+
+    if (_options.childOptions) {
+      chart.childOptions(_options.childOptions);
+    }
+
+    if (_options.yAxisTickFormat !== undefined) {
+      chart.yAxis().tickFormat(_options.yAxisTickFormat);
+    }
+
+    if (_options.seriesSort !== undefined) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+    if (_options.legend) {
+          // Render populates legendables
+      chart.render();
+
+      chart.legendables = function () {
+        var _items = [];
+        var _children = chart.children();
+        var i;
+
+        for (i = 0; i < _children.length; i++) {
+          var _child = _children[i];
+
+          if (chart.shareColors()) {
+            _child.colors(chart.colors());
+          }
+
+          _child.stack().every(function (item) {
+            _items.push(_child.legendables()[0]);
+          });
+        };
+
+        return _items;
+      };
+
+      dc.statLegend.legend(chart, _options);
+    }
+
+    chart.render();
+
+    if (_options.chartConfig.yAxisLabelAngle != null &&
+      _options.chartConfig.yAxisLabelOffsetX != null &&
+      _options.chartConfig.yAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.y g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.yAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.yAxisLabelOffsetY) + ')' +
+                ' rotate(' + (_options.chartConfig.yAxisLabelAngle) + ')');
+    }
+
+    if (_options.chartConfig.xAxisLabelAngle != null &&
+      _options.chartConfig.xAxisLabelOffsetX != null &&
+      _options.chartConfig.xAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.x g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.xAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.xAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.xAxisLabelAngle + ')')
+              .style('text-anchor', 'end');
+    }
+
+    chart.getOptions = function () {
+      return _options;
+    };
+
+    chart.getWidth = function () {
+      return _width;
+    };
+
+    chart.getHeight = function () {
+      return _height;
+    };
+
+    return chart;
+  },
+
+  /**
+   * Format a number with thousand separator
+   */
+  currencyFormat: d3.format('0.000'),
+
+  /**
+   * Normalize the size of a dashboard graphic
+   *
+   * @param  {Number} width               The current width
+   * @param  {Number} height              The current height
+   * @param  {Number} minHeight           The minimum height of the element in pixels
+   * @param  {Number} maxHeightFract      The current height
+   * @return {Object}             An object with two properties w (width) and h (height)
+   */
+  sizeIt: function (width, height, minHeight, maxHeightFract) {
+    if (minHeight === undefined) {
+      console.debug('Missing parameter minHeight for this.sizeIt function');
+    }
+
+    if (maxHeightFract === undefined) {
+      console.debug('Missing parameter maxHeightFract for this.sizeIt function');
+    }
+
+    var _winH = $(window).height();
+
+    if (height > (_winH * maxHeightFract)) {
+      height = (_winH * maxHeightFract);
+    }
+
+    if (height < minHeight) {
+      height = minHeight;
+    }
+
+    return {
+      w: width,
+      h: height
+    };
+  },
+
+  getNormElemSize: function (domSelector, minHeight, maxHeightFract) {
+    if (maxHeightFract === undefined) {
+      maxHeightFract = 0.33;
+    }
+
+    if (minHeight === undefined) {
+      minHeight = 250;
+    }
+
+    var _elem = $(domSelector);
+    return {
+      w: _elem.parent().width(),
+      h: _elem.parent().height()
+    };
+  },
+
+  /**
+   * Create a gauge chart
+   *
+   * @param {String} domSelector A DOM selector
+   * @param {crossfilter.group} group A crossfilter group object
+   * @param {Object} options A configuration object
+   * @return {dc.chart} A dc.chart object
+   */
+  gaugeChart: function (domSelector, group, options) {
+    var chartOptions = {
+      'minHeight': 150,
+      'maxHeightFract': 0.25,
+      'aspectRatio': 0.66,
+      'unitType': '',
+      'dataValueFormat': ',.2f',
+      range: [80, 100]
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight, _options.maxHeightFract);
+
+    var _width = _size.w;
+    var _height = _size.h;
+
+      // Gauge containers should always be square
+    if (_width > _height) {
+      _width = _height;
+    } else {
+      _height = _width;
+    }
+
+    var chart = dc.gaugeChart(domSelector);
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(options.valueAccessor);
+    }
+
+    if (_options.dataValueFormat !== undefined) {
+      chart.dataValueFormat(_options.dataValueFormat);
+    }
+
+    if (_options.unitType !== undefined) {
+      chart.unitType(_options.unitType);
+    }
+
+    chart
+          .transitionDuration(0)
+          .group(group)
+          .width(_width)
+          .height(_height)
+          .range(_options.range);
+
+    return chart.render();
+  },
+
+  /**
+   * Create a grouped bar chart diagram
+   *
+   * @param {String} domSelector A DOM selector for where you want to place your diagram, i.e. #chart1
+   * @param {crossfilter.dimension} dim A crossfilter dimension
+   * @param {crossfilter.group} group A crossfilter group
+   * @param {Object} options An object with extended options for rendering the diagram
+   * @return {dc.chart} A dc.chart object
+   */
+  rowChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      aspectRatio: 0.66
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    var chart = dc.rowChart(domSelector);
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    if (_options.valueLabelFormat !== undefined) {
+      chart.valueLabelFormat(_options.valueLabelFormat);
+    }
+
+    if (_options.xAxisLabelFormat !== undefined) {
+      chart.xAxisLabelFormat(_options.xAxisLabelFormat);
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .xAxisLabel(_options.xAxisLabel)
+          .yAxisLabel(_options.yAxisLabel)
+          .margins(_options.margins);
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+    return chart.render();
+  },
+
+  /**
+   * Create a grouped bar chart diagram
+   *
+   * @param {String} domSelector A DOM selector for where you want to place your diagram, i.e. #chart1
+   * @param {crossfilter.dimension} dim A crossfilter dimension
+   * @param {crossfilter.group} group A crossfilter group
+   * @param {Object} options An object with extended options for rendering the diagram
+   * @return {dc.chart} A dc.chart object
+   */
+  groupedStackedRowChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      aspectRatio: 0.66
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    var chart = dc.groupedStackedRowChart(domSelector);
+
+    _options.legendWidth = _width;
+    _options.legendItemWidth = _width;
+
+    if (!options.colors) {
+      _options.colors = dc.statColorScales.google();
+    }
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    if (_options.valueLabelFormat !== undefined) {
+      chart.valueLabelFormat(_options.valueLabelFormat);
+    }
+
+    if (_options.xAxisLabelFormat !== undefined) {
+      chart.xAxisLabelFormat(_options.xAxisLabelFormat);
+    }
+
+    if (_options.chartConfig.xAxisLabelPadding) {
+      _options.margins.bottom += _options.chartConfig.xAxisLabelPadding;
+    }
+
+    if (_options.chartConfig.yAxisLabelPadding) {
+      _options.margins.left += _options.chartConfig.yAxisLabelPadding;
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .colors(_options.colors)
+          .xAxisLabel(_options.chartConfig.xAxisLabel)
+          .yAxisLabel(_options.chartConfig.yAxisLabel)
+          .margins(_options.margins);
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+      // overwrite legendables function
+    chart.legendables = function () {
+      return group.map(function (d) {
+        return {
+          name: d.key[0],
+          color: _options.colors(d.key[0]),
+          chart: chart
+        };
+      });
+    };
+
+    if (_options.legend) {
+      dc.statLegend.legend(chart, _options);
+    }
+
+    chart.render();
+
+    if (_options.chartConfig.yAxisLabelAngle != null &&
+      _options.chartConfig.yAxisLabelOffsetX != null &&
+      _options.chartConfig.yAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.y g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.yAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.yAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.yAxisLabelAngle + ')');
+    }
+
+    if (_options.chartConfig.xAxisLabelAngle != null &&
+      _options.chartConfig.xAxisLabelOffsetX != null &&
+      _options.chartConfig.xAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.x g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.xAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.xAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.xAxisLabelAngle + ')')
+              .style('text-anchor', 'end');
+    }
+    return chart;
+  },
+
+  /**
+   * Create a grouped bar chart diagram
+   *
+   * @param {String} domSelector A DOM selector for where you want to place your diagram, i.e. #chart1
+   * @param {crossfilter.dimension} dim A crossfilter dimension
+   * @param {crossfilter.group} group A crossfilter group
+   * @param {Object} options An object with extended options for rendering the diagram
+   * @return {dc.chart} A dc.chart object
+   */
+  groupedRowChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      'minHeight': 300,
+      'aspectRatio': 0.66
+    };
+
+    var _options = {
+      'colors': dc.statColorScales.google(),
+      'highlightVariables': [],
+      'highlightColor': '#ff0000'
+    };
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    _options.legendWidth = _width;
+    _options.legendItemWidth = _height;
+
+    var chart = dc.groupedRowChart(domSelector);
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    if (_options.valueLabelFormat !== undefined) {
+      chart.valueLabelFormat(_options.valueLabelFormat);
+    }
+
+    if (_options.xAxisLabelFormat !== undefined) {
+      chart.xAxisLabelFormat(_options.xAxisLabelFormat);
+    }
+
+    if (_options.chartConfig.xAxisLabelPadding) {
+      _options.margins.bottom += _options.chartConfig.xAxisLabelPadding;
+    }
+
+    if (_options.chartConfig.yAxisLabelPadding) {
+      _options.margins.left += _options.chartConfig.yAxisLabelPadding;
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .yAxisMinValue(_options.chartConfig.yAxisMinValue)
+          .yAxisMaxValue(_options.chartConfig.yAxisMaxValue)
+          .xAxisLabel(_options.chartConfig.xAxisLabel)
+          .yAxisLabel(_options.chartConfig.yAxisLabel)
+          .margins(_options.margins)
+          .colors(_options.colors)
+          .highlightColor(_options.highlightColor)
+          .highlightVariables(_options.highlightVariables)
+          .renderTitle(true);
+
+    chart.sortArray = _options.sortArray;
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+    if (_options.legend) {
+      chart.legendables = function () {
+        var _items = [];
+        var _children = chart.children();
+        var i;
+
+        for (i = 0; i < _children.length; i++) {
+          var _child = _children[i];
+
+          if (chart.shareColors()) {
+            _child.colors(chart.colors());
+          }
+
+          var order = _child.stack().values().next().value.values[0].data.key[4];
+          _items[order - 1] = _child.legendables()[0];
+        };
+
+        return _items;
+      };
+      dc.statLegend.legend(chart, _options, true);
+    }
+
+    chart.render();
+
+    if (_options.chartConfig.yAxisLabelAngle != null &&
+      _options.chartConfig.yAxisLabelOffsetX != null &&
+      _options.chartConfig.yAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.y g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.yAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.yAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.yAxisLabelAngle + ')');
+    }
+
+    if (_options.chartConfig.xAxisLabelAngle != null &&
+      _options.chartConfig.xAxisLabelOffsetX != null &&
+      _options.chartConfig.xAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.x g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.xAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.xAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.xAxisLabelAngle + ')')
+              .style('text-anchor', 'end');
+    }
+    return chart;
+  },
+
+  /**
+   * Create a grouped bar chart
+   *
+   * @param  {String} domSelector A DOM selector including the dot (.) or hash (#), i.e. #chart1
+   * @param  {crossfilter.dimension} dim  crossfilter dimension
+   * @param  {crissfilter.group} group A crossfilter group
+   * @param  {Object} options On object of options that will be copied onto the chart
+   * @return {dc.chart} A dc.chart object
+   */
+  stackedBarChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      'minHeight': 300,
+      'aspectRatio': 0.66,
+      yAxisTickFormat: d3.format('d')
+    };
+
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    var chart = dc.stackedBarChart(domSelector);
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .xAxisLabel(_options.xAxisLabel)
+          .yAxisLabel(_options.yAxisLabel)
+          .margins(_options.margins);
+
+    if (_options.yAxisTickFormat !== undefined) {
+      chart.yAxisLabelFormat(_options.yAxisTickFormat);
+    }
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+    if (_options.legend) {
+      console.log('Render legends to legendDiv');
+    }
+
+    return chart.render();
+  },
+
+  /**
+   * Create a grouped bar chart
+   *
+   * @param  {String} domSelector A DOM selector including the dot (.) or hash (#), i.e. #chart1
+   * @param  {crossfilter.dimension} dim  crossfilter dimension
+   * @param  {crissfilter.group} group A crossfilter group
+   * @param  {Object} options On object of options that will be copied onto the chart
+   * @return {dc.chart} A dc.chart object
+   */
+  groupedBarChart: function (domSelector, dim, group, options) {
+    var chartOptions = {
+      'aspectRatio': 0.66,
+      'xAxisTitle': '',
+      'yAxisTitle': '',
+      yAxisTickFormat: d3.format('d'),
+      legend: false,
+      autoItemWidth: false,
+      legendItemHeight: 15,
+      legendGap: 5,
+      colors: dc.statColorScales.google(),
+      horizontalLegend: true,
+      highlightVariables: [],
+      highlightColor: '#ff0000'
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var _size = this.getNormElemSize(domSelector, _options.minHeight);
+
+    var _width = _size.w;
+
+    var _height = _size.h;
+
+    _options.legendWidth = _width;
+    _options.legendItemWidth = _width;
+
+    var _refLine = _options.chartConfig.refLine;
+    var _refLineText = _options.chartConfig.refLineText;
+    var _refLineAllign = _options.chartConfig.refLineAllign;
+
+    var chart = dc.groupedBarChart(domSelector);
+
+    if (_options.valueAccessor !== undefined) {
+      chart.valueAccessor(_options.valueAccessor);
+    }
+
+    if (_options.chartConfig.xAxisLabelPadding) {
+      _options.margins.bottom += _options.chartConfig.xAxisLabelPadding;
+    }
+
+    if (_options.chartConfig.yAxisLabelPadding) {
+      _options.margins.left += _options.chartConfig.yAxisLabelPadding;
+    }
+
+    chart
+          .transitionDuration(0)
+          .width(_width)
+          .height(_height)
+          .dimension(dim)
+          .group(group)
+          .xAxisLabel(_options.chartConfig.xAxisLabel)
+          .yAxisLabel(_options.chartConfig.yAxisLabel)
+          .yAxisMinValue(_options.chartConfig.yAxisMinValue)
+          .yAxisMaxValue(_options.chartConfig.yAxisMaxValue)
+          .margins(_options.margins)
+          .colors(_options.colors)
+          .highlightColor(_options.highlightColor)
+          .highlightVariables(_options.highlightVariables);
+
+    if (_refLine) {
+      this.referenceLine(chart, _refLine, _refLineText, _refLineAllign);
+    }
+
+    if (_options.yAxisTickFormat !== undefined) {
+      chart.yAxisLabelFormat(_options.yAxisTickFormat);
+    }
+
+    if ($.isFunction(_options.ordering)) {
+      chart.ordering(_options.ordering);
+    }
+
+    if ($.isFunction(_options.seriesSort)) {
+      chart.seriesSort(_options.seriesSort);
+    }
+
+    if (_options.legend) {
+      dc.statLegend.legend(chart, _options, true);
+    }
+
+    chart.sortArray = _options.sortArray;
+
+    chart.render();
+
+    if (_options.chartConfig.yAxisLabelAngle != null &&
+      _options.chartConfig.yAxisLabelOffsetX != null &&
+      _options.chartConfig.yAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.y g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.yAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.yAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.yAxisLabelAngle + ')');
+    }
+
+    if (_options.chartConfig.xAxisLabelAngle != null &&
+      _options.chartConfig.xAxisLabelOffsetX != null &&
+      _options.chartConfig.xAxisLabelOffsetY != null) {
+      chart.selectAll('g.axis.x g.tick text')
+              .attr('transform', 'translate(' + this.scaleWidth(_width, _options.chartConfig.xAxisLabelOffsetX) +
+                ',' + this.scaleHeight(_height, _options.chartConfig.xAxisLabelOffsetY) + ')' +
+                ' rotate(' + _options.chartConfig.xAxisLabelAngle + ')')
+              .style('text-anchor', 'end');
+    }
+
+    return chart;
+  },
+
+  /**
+   * Create an oridinal pie chart
+   *
+   * @param {string} domSelector
+   * @param {crossfilter.dimension} dim
+   * @param {crossfilter.group} group
+   * @param {object} [options={}] Any diagram specific options
+   * @return {dc.chart} A chart object from dc.js
+   */
+  pieChart: function (domSelector, dim, group, options) {
+    var _dim = this.getNormElemSize(domSelector);
+    var _width = _dim.w;
+    var _height = _dim.h;
+
+    var _radius = Math.min(_width, _height) / 2;
+
+    var chartOptions = {
+      labelAccessor: function (d) {
+        return d.value;
+      },
+      legend: false,
+      legendLines: 1,
+      legendItemWidth: _width,
+      autoItemWidth: true,
+      legendWidth: _width,
+      externalRadiusPadding: 50,
+      innerRadius: 25,
+      horizontalLegend: true,
+      legendGap: 5,
+      legendItemHeight: 15
+    };
+    var _options = {};
+
+    $.extend(true, _options, this.options, chartOptions, options);
+
+    var chart = dc.pieChart(domSelector)
+          .transitionDuration(0)
+          .radius(_radius)
+          .width(_width)
+          .colors(dc.statColorScales.google())
+          .slicesCap(8)
+          .innerRadius(_options.innerRadius)
+          .externalRadiusPadding(_options.externalRadiusPadding)
+          .drawPaths(true)
+          .dimension(dim)
+          .renderLabel(true)
+          .label(_options.labelAccessor)
+          .valueAccessor(_options.valueAccessor)
+          .group(group);
+
+    if (_options.ordering !== undefined) {
+      chart.ordering(_options.ordering);
+    }
+
+    chart.legendHighlight = function () {};
+
+    chart.data(function (g) {
+      var tmp = g
+              .all();
+
+      tmp = tmp.sort(function (a, b) {
+        var av = chart.ordering()(a);
+        var bv = chart.ordering()(b);
+
+        if (av > bv) {
+          return 1;
+        } else if (av < bv) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      return tmp;
+    });
+
+    if (_options.legend) {
+      chart.legendables = function () {
+        var tmpData = group.all().slice();
+        var items = [];
+        var i;
+
+        for (i = 0; i < tmpData.length; i++) {
+          var item = tmpData[i];
+          items[item.key[1] - 1] = {
+            name: item.key[0],
+            color: _options.colors(item.key[0]),
+            chart: chart
+          };
+        }
+        return items;
+      };
+      dc.statLegend.pieLegend(chart, _options);
+    }
+
+    return chart.render();
+  }
+};
 // Renamed functions
 
 dc.abstractBubbleChart = dc.bubbleMixin;
@@ -11148,6 +14468,7 @@ return dc;}
         module.exports = _dc(_d3, _crossfilter);
     } else {
         this.dc = _dc(d3, crossfilter);
+        //This one
     }
 }
 )();
