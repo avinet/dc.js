@@ -484,5 +484,9 @@ module.exports.jsFiles = [
     'src/d3.box.js',
     'src/box-plot.js',
     'src/select-menu.js',
+    'src/diagrams/dcextended.js',
+    'src/diagrams/colorscales.js',
+    'src/diagrams/legend.js',
+    'src/diagrams/diagrams.js',
     'src/footer.js'  // NOTE: keep this last
 ];

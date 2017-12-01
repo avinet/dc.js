@@ -30,6 +30,7 @@ return dc;}
         module.exports = _dc(_d3, _crossfilter);
     } else {
         this.dc = _dc(d3, crossfilter);
+        //This one
     }
 }
 )();
