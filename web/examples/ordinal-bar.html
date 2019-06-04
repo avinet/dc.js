@@ -12,6 +12,8 @@
 <script type="text/javascript" src="header.js"></script>
 <div id="test"></div>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
 <script type="text/javascript" src="../js/d3.js"></script>
 <script type="text/javascript" src="../js/crossfilter.js"></script>
 <script type="text/javascript" src="../js/dc.js"></script>
@@ -19,10 +21,7 @@
 
   var chart = dc.barChart('#test');
 
-  d3.json('fruits.json', function(error, counts) {
-      if(error)
-          throw new Error(error);
-
+  d3.json('fruits.json').then(function(counts) {
       var ndx            = crossfilter(counts),
           fruitDimension = ndx.dimension(function(d) {return d.name;}),
           sumGroup       = fruitDimension.group().reduceSum(function(d) {return d.cnt;});
@@ -30,7 +29,7 @@
       chart
           .width(768)
           .height(380)
-          .x(d3.scale.ordinal())
+          .x(d3.scaleBand())
           .xUnits(dc.units.ordinal)
           .brushOn(false)
           .xAxisLabel('Fruit')

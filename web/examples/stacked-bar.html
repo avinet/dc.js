@@ -17,13 +17,15 @@
 <script type="text/javascript" src="header.js"></script>
     <div id="test"></div>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
     <script type="text/javascript" src="../js/d3.js"></script>
     <script type="text/javascript" src="../js/crossfilter.js"></script>
     <script type="text/javascript" src="../js/dc.js"></script>
     <script type="text/javascript">
 
       var chart = dc.barChart("#test");
-      d3.csv("morley.csv", function(error, experiments) {
+      d3.csv("morley.csv").then(function(experiments) {
 
           experiments.forEach(function(x) {
               x.Speed = +x.Speed;
@@ -50,7 +52,7 @@
           chart
               .width(768)
               .height(480)
-              .x(d3.scale.linear().domain([1,21]))
+              .x(d3.scaleLinear().domain([1,21]))
               .margins({left: 80, top: 20, right: 10, bottom: 20})
               .brushOn(false)
               .clipPadding(10)

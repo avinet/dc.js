@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>dc.js - Area Transitions Example</title>
+    <title>dc.js - Area Transitions</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
@@ -17,6 +17,8 @@
     <button class="btn" onclick="button3()">middle</button>
     <button class="btn" onclick="button4()">stacks</button>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
     <script type="text/javascript" src="../js/d3.js"></script>
     <script type="text/javascript" src="../js/crossfilter.js"></script>
     <script type="text/javascript" src="../js/dc.js"></script>
@@ -24,7 +26,7 @@
     <script type="text/javascript">
 
       var chart = dc.lineChart("#test");
-      d3.csv("../examples/morley.csv", function(error, experiments) {
+      d3.csv("../examples/morley.csv").then(function(experiments) {
 
           experiments.forEach(function(x) {
               x.Speed = +x.Speed;
@@ -54,7 +56,7 @@
               .transitionDuration(transitionTest.duration)
               .width(768)
               .height(480)
-              .x(d3.scale.linear().domain([1,20]))
+              .x(d3.scaleLinear().domain([1,20]))
               .margins({left: 50, top: 10, right: 10, bottom: 20})
               .renderArea(doArea)
               .brushOn(false)

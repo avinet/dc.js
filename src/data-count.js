@@ -20,10 +20,10 @@
  * var all = ndx.groupAll();
  *
  * dc.dataCount('.dc-data-count')
- *     .dimension(ndx)
- *     .group(all);
+ *     .crossfilter(ndx)
+ *     .groupAll(all);
  * @param {String|node|d3.selection} parent - Any valid
- * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector} specifying
+ * {@link https://github.com/d3/d3-selection/blob/master/README.md#select d3 single selector} specifying
  * a dom block element such as a div; or a dom element or d3 selection.
  * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
  * Interaction with a chart will only trigger events and redraws within the chart's group.
@@ -32,7 +32,10 @@
 dc.dataCount = function (parent, chartGroup) {
     var _formatNumber = d3.format(',d');
     var _chart = dc.baseMixin({});
+    var _crossfilter = null, _groupAll = null;
     var _html = {some: '', all: ''};
+
+    _chart._mandatoryAttributes(['crossfilter', 'groupAll']);
 
     /**
      * Gets or sets an optional object specifying HTML templates to use depending how many items are
@@ -69,7 +72,7 @@ dc.dataCount = function (parent, chartGroup) {
      * @method formatNumber
      * @memberof dc.dataCount
      * @instance
-     * @see {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md d3.format}
+     * @see {@link https://github.com/d3/d3-format/blob/master/README.md#format d3.format}
      * @example
      * counter.formatNumber(d3.format('.2g'))
      * @param {Function} [formatter=d3.format('.2g')]
@@ -84,8 +87,8 @@ dc.dataCount = function (parent, chartGroup) {
     };
 
     _chart._doRender = function () {
-        var tot = _chart.dimension().size(),
-            val = _chart.group().value();
+        var tot = _chart.crossfilter().size(),
+            val = _chart.groupAll().value();
         var all = _formatNumber(tot);
         var selected = _formatNumber(val);
 
@@ -103,6 +106,26 @@ dc.dataCount = function (parent, chartGroup) {
     _chart._doRedraw = function () {
         return _chart._doRender();
     };
+
+    _chart.crossfilter = function (cf) {
+        if (!arguments.length) {
+            return _crossfilter;
+        }
+        _crossfilter = cf;
+        return this;
+    };
+    _chart.dimension = dc.logger.annotate(_chart.crossfilter,
+                                          'consider using dataCount.crossfilter instead of dataCount.dimension for clarity');
+
+    _chart.groupAll = function (groupAll) {
+        if (!arguments.length) {
+            return _groupAll;
+        }
+        _groupAll = groupAll;
+        return this;
+    };
+    _chart.group = dc.logger.annotate(_chart.groupAll,
+                                      'consider using dataCount.groupAll instead of dataCount.group for clarity');
 
     return _chart.anchor(parent, chartGroup);
 };

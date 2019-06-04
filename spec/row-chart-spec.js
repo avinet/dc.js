@@ -6,6 +6,7 @@ describe('dc.rowChart', function () {
     var negativeGroupHolder = {groupType: 'negative signed'};
     var mixedGroupHolder = {groupType: 'mixed signed'};
     var largerGroupHolder = {groupType: 'larger'};
+    var statusDimension, statusMultiGroup;
 
     beforeEach(function () {
         data = crossfilter(loadDateFixture());
@@ -21,6 +22,28 @@ describe('dc.rowChart', function () {
         nvdimension = data.dimension(function (d) { return +d.nvalue; });
         largerGroupHolder.group = nvdimension.group().reduceSum(function (d) {return +d.value;});
         largerGroupHolder.dimension = nvdimension;
+
+        statusDimension = data.dimension(function (d) {
+            return d.status;
+        });
+        statusMultiGroup = statusDimension.group().reduce(
+            //add
+            function (p, v) {
+                ++p.count;
+                p.total += +v.value;
+                return p;
+            },
+            //remove
+            function (p, v) {
+                --p.count;
+                p.total -= +v.value;
+                return p;
+            },
+            //init
+            function () {
+                return {count: 0, total: 0, getTotal: function () { return this.total; }};
+            }
+        );
 
         id = 'row-chart';
         appendChartID(id);
@@ -52,7 +75,7 @@ describe('dc.rowChart', function () {
         beforeEach(function () {
             chart.group(positiveGroupHolder.group);
             chart.elasticX(false);
-            chart.x(d3.scale.log());
+            chart.x(d3.scaleLog());
             chart.render();
         });
 
@@ -65,7 +88,7 @@ describe('dc.rowChart', function () {
         beforeEach(function () {
             chart.group(positiveGroupHolder.group);
             chart.elasticX(false);
-            chart.x(d3.scale.log());
+            chart.x(d3.scaleLog());
             chart.fixedBarHeight(10);
             chart.render();
         });
@@ -78,7 +101,7 @@ describe('dc.rowChart', function () {
     describe('with renderTitleLabel', function () {
         beforeEach(function () {
             chart.group(positiveGroupHolder.group);
-            chart.x(d3.scale.linear());
+            chart.x(d3.scaleLinear());
             chart.title(function () {
                 return 'test title';
             });
@@ -88,6 +111,71 @@ describe('dc.rowChart', function () {
 
         it('should render title label centered', function () {
             expect(chart.select('g.row .titlerow').attr('dy')).toBeDefined();
+        });
+    });
+
+    describe('row chart cap', function () {
+        beforeEach(function () {
+            chart.dimension(statusDimension)
+                .group(statusMultiGroup)
+                .othersLabel('small');
+            return chart;
+        });
+        describe('with custom valueAccessor', function () {
+            // statusMultiGroup has
+            // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
+            beforeEach(function () {
+                chart.dimension(statusDimension).group(statusMultiGroup)
+                    .valueAccessor(function (d) {
+                        return d.value.total;
+                    })
+                    .ordering(function (d) {
+                        return -d.value.total;
+                    })
+                    .render();
+                return chart;
+            });
+            it('correct values, no others row', function () {
+                expect(chart.selectAll('title').nodes().map(function (t) {return d3.select(t).text();}))
+                    .toEqual(['F: 220', 'T: 198']);
+            });
+            describe('with cap(1)', function () {
+                beforeEach(function () {
+                    chart.cap(1).render();
+                });
+                it('correct values, others row', function () {
+                    expect(chart.selectAll('title').nodes().map(function (t) {return d3.select(t).text();}))
+                        .toEqual(['F: 220', 'small: 198']);
+                });
+            });
+        });
+        describe('with custom valueAccessor calling function', function () {
+            // statusMultiGroup has
+            // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
+            beforeEach(function () {
+                chart.dimension(statusDimension).group(statusMultiGroup)
+                    .valueAccessor(function (d) {
+                        return d.value.getTotal();
+                    })
+                    .ordering(function (d) {
+                        return -d.value.getTotal();
+                    })
+                    .render();
+                return chart;
+            });
+            it('correct values, no others row', function () {
+                expect(chart.selectAll('title').nodes().map(function (t) {return d3.select(t).text();}))
+                    .toEqual(['F: 220', 'T: 198']);
+            });
+            describe('with cap(1)', function () {
+                beforeEach(function () {
+                    chart.cap(1).render();
+                });
+                it('correct values, others row', function () {
+                    expect(chart.selectAll('title').nodes().map(function (t) {return d3.select(t).text();}))
+                        .toEqual(['F: 220', 'small: 198']);
+                });
+            });
         });
     });
 
@@ -117,11 +205,10 @@ describe('dc.rowChart', function () {
                 });
 
                 it('should fill each row rect with pre-defined colors', function () {
-                    expect(d3.select(chart.selectAll('g.row rect')[0][0]).attr('fill')).toMatch(/#3182bd/i);
-                    expect(d3.select(chart.selectAll('g.row rect')[0][1]).attr('fill')).toMatch(/#6baed6/i);
-                    expect(d3.select(chart.selectAll('g.row rect')[0][2]).attr('fill')).toMatch(/#9ecae1/i);
-                    expect(d3.select(chart.selectAll('g.row rect')[0][3]).attr('fill')).toMatch(/#c6dbef/i);
-                    expect(d3.select(chart.selectAll('g.row rect')[0][4]).attr('fill')).toMatch(/#e6550d/i);
+                    for (var i = 0; i < N; i++) {
+                        expect(d3.select(chart.selectAll('g.row rect').nodes()[i]).attr('fill'))
+                            .toMatchColor(dc.config.defaultColors()[i]);
+                    }
                 });
 
                 it('should create a row label from the data for each row', function () {
@@ -141,8 +228,8 @@ describe('dc.rowChart', function () {
 
                     function itShouldVerticallyCenterLabelWithinRow (i) {
                         it('should place label ' + i + ' within row ' + i, function () {
-                            var rowpos = rows[0][i].getBoundingClientRect(),
-                                textpos = labels[0][i].getBoundingClientRect();
+                            var rowpos = rows.nodes()[i].getBoundingClientRect(),
+                                textpos = labels.nodes()[i].getBoundingClientRect();
                             expect((textpos.top + textpos.bottom) / 2)
                                 .toBeWithinDelta((rowpos.top + rowpos.bottom) / 2, 2);
                         });
@@ -381,7 +468,7 @@ describe('dc.rowChart', function () {
                     });
 
                     it('should generate x axis domain dynamically', function () {
-                        var nthText = function (n) { return d3.select(chart.selectAll('g.axis .tick text')[0][n]); };
+                        var nthText = function (n) { return d3.select(chart.selectAll('g.axis .tick text').nodes()[n]); };
 
                         for (var i = 0; i < xAxisTicks.length; i++) {
                             expect(nthText(i).text()).toBe(xAxisTicks[i]);

@@ -8,10 +8,11 @@
  * @returns {dc.colorMixin}
  */
 dc.colorMixin = function (_chart) {
-    var _colors = d3.scale.category20c();
+    var _colors = d3.scaleOrdinal(dc.config.defaultColors());
     var _defaultAccessor = true;
 
     var _colorAccessor = function (d) { return _chart.keyAccessor()(d); };
+    var _colorCalculator;
 
     /**
      * Retrieve current color scale or set a new color scale. This methods accepts any function that
@@ -19,17 +20,17 @@ dc.colorMixin = function (_chart) {
      * @method colors
      * @memberof dc.colorMixin
      * @instance
-     * @see {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Scales.md d3.scale}
+     * @see {@link https://github.com/d3/d3-scale/blob/master/README.md d3.scale}
      * @example
      * // alternate categorical scale
      * chart.colors(d3.scale.category20b());
      * // ordinal scale
-     * chart.colors(d3.scale.ordinal().range(['red','green','blue']));
+     * chart.colors(d3.scaleOrdinal().range(['red','green','blue']));
      * // convenience method, the same as above
      * chart.ordinalColors(['red','green','blue']);
      * // set a linear scale
      * chart.linearColors(["#4575b4", "#ffffbf", "#a50026"]);
-     * @param {d3.scale} [colorScale=d3.scale.category20c()]
+     * @param {d3.scale} [colorScale=d3.scaleOrdinal(d3.schemeCategory20c)]
      * @returns {d3.scale|dc.colorMixin}
      */
     _chart.colors = function (colorScale) {
@@ -37,16 +38,16 @@ dc.colorMixin = function (_chart) {
             return _colors;
         }
         if (colorScale instanceof Array) {
-            _colors = d3.scale.quantize().range(colorScale); // deprecated legacy support, note: this fails for ordinal domains
+            _colors = d3.scaleQuantize().range(colorScale); // deprecated legacy support, note: this fails for ordinal domains
         } else {
-            _colors = d3.functor(colorScale);
+            _colors = typeof colorScale === 'function' ? colorScale : dc.utils.constant(colorScale);
         }
         return _chart;
     };
 
     /**
      * Convenience method to set the color scale to
-     * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Ordinal-Scales.md#ordinal d3.scale.ordinal} with
+     * {@link https://github.com/d3/d3-scale/blob/master/README.md#ordinal-scales d3.scaleOrdinal} with
      * range `r`.
      * @method ordinalColors
      * @memberof dc.colorMixin
@@ -55,7 +56,7 @@ dc.colorMixin = function (_chart) {
      * @returns {dc.colorMixin}
      */
     _chart.ordinalColors = function (r) {
-        return _chart.colors(d3.scale.ordinal().range(r));
+        return _chart.colors(d3.scaleOrdinal().range(r));
     };
 
     /**
@@ -67,7 +68,7 @@ dc.colorMixin = function (_chart) {
      * @returns {dc.colorMixin}
      */
     _chart.linearColors = function (r) {
-        return _chart.colors(d3.scale.linear()
+        return _chart.colors(d3.scaleLinear()
                              .range(r)
                              .interpolate(d3.interpolateHcl));
     };
@@ -146,28 +147,30 @@ dc.colorMixin = function (_chart) {
      * @returns {String}
      */
     _chart.getColor = function (d, i) {
-        return _colors(_colorAccessor.call(this, d, i));
+        return _colorCalculator ? _colorCalculator.call(this, d, i) : _colors(_colorAccessor.call(this, d, i));
     };
 
     /**
-     * **Deprecated.** Get/set the color calculator. This actually replaces the
-     * {@link dc.colorMixin#getColor getColor} method!
+     * Overrides the color selection algorithm, replacing it with a simple function.
      *
-     * This is not recommended, since using a {@link dc.colorMixin#colorAccessor colorAccessor} and
-     * color scale ({@link dc.colorMixin#colors .colors}) is more powerful and idiomatic d3.
+     * Normally colors will be determined by calling the `colorAccessor` to get a value, and then passing that
+     * value through the `colorScale`.
+     *
+     * But sometimes it is difficult to get a color scale to produce the desired effect. The `colorCalculator`
+     * takes the datum and index and returns a color directly.
      * @method colorCalculator
      * @memberof dc.colorMixin
      * @instance
      * @param {*} [colorCalculator]
      * @returns {Function|dc.colorMixin}
      */
-    _chart.colorCalculator = dc.logger.deprecate(function (colorCalculator) {
+    _chart.colorCalculator = function (colorCalculator) {
         if (!arguments.length) {
-            return _chart.getColor;
+            return _colorCalculator || _chart.getColor;
         }
-        _chart.getColor = colorCalculator;
+        _colorCalculator = colorCalculator;
         return _chart;
-    }, 'colorMixin.colorCalculator has been deprecated. Please colorMixin.colors and colorMixin.colorAccessor instead');
+    };
 
     return _chart;
 };

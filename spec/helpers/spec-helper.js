@@ -1,13 +1,16 @@
 /* global parseTranslate */
+/* eslint "no-unused-vars": 0 */
+
+/*exported appendChartID, coordsFromTranslate, makeDate, cleanDateRange, flushAllD3Transitions */
+/*exported simulateChartBrushing, simulateChart2DBrushing */
+
 beforeEach(function () {
     jasmine.clock().install();
 
     // If we're using browserify bundle, pull d3 and crossfilter out of it,
     // so that tests don't have to deal with this incidental complexity.
-    /* jshint -W020 */
     if (typeof d3 === 'undefined') { d3 = dc.d3; }
     if (typeof crossfilter === 'undefined') { crossfilter = dc.crossfilter; }
-    /* jshint +W020 */
     d3.select('body').append('div').attr('id', 'test-content');
 });
 
@@ -18,7 +21,6 @@ afterEach(function () {
     jasmine.clock().uninstall();
 });
 
-/* jshint -W098 */
 function appendChartID (id) {
     return d3.select('#test-content').append('div').attr('id', id);
 }
@@ -45,9 +47,46 @@ function cleanDateRange (range) {
 
 // http://stackoverflow.com/questions/20068497/d3-transition-in-unit-testing
 function flushAllD3Transitions () {
-    var now = Date.now;
-    Date.now = function () { return Infinity; };
-    d3.timer.flush();
-    Date.now = now;
+    d3.timerFlush();
 }
-/* jshint +W098 */
+
+// Simulate a dummy event - just enough for the handler to get fooled
+var simulateChartBrushing = function (chart, domainSelection) {
+    // D3v4 needs scaled coordinates for the event
+    var scaledSelection = domainSelection.map(function (coord) {
+        return chart.x()(coord);
+    });
+
+    d3.event = {
+        sourceEvent: true,
+        selection: scaledSelection
+    };
+
+    try {
+        chart._brushing();
+    } finally {
+        d3.event = null;
+    }
+};
+
+// Simulate a dummy event - just enough for the handler to get fooled
+var simulateChart2DBrushing = function (chart, domainSelection) {
+    // D3v4 needs scaled coordinates for the event
+    var scaledSelection = domainSelection.map(function (point) {
+        return point.map(function (coord, i) {
+            var scale = i === 0 ? chart.x() : chart.y();
+            return scale(coord);
+        });
+    });
+
+    d3.event = {
+        sourceEvent: true,
+        selection: scaledSelection
+    };
+
+    try {
+        chart._brushing();
+    } finally {
+        d3.event = null;
+    }
+};

@@ -1,20 +1,21 @@
 module.exports = function (grunt) {
+    var PER_ROW = 4;
     return function (list, opts) {
         var files = list.sort().map(function (entry) {
             var f = entry.replace(/.*\//, '');
             return [f.replace('.html', '').replace(/-/g, ' '), f];
         }).filter(function (e) { return e[0] !== 'index'; });
         var rows = [];
-        for (var i = 0; i < files.length; i += 5) {
+        for (var i = 0; i < files.length; i += PER_ROW) {
             var cols = [];
-            for (var j = 0; j < 5; ++j) {
+            for (var j = 0; j < PER_ROW; ++j) {
                 if (i + j >= files.length) {
                     break;
                 }
                 var file = files[i + j];
                 cols.push('    <td><a href="' + file[1] + '">' + file[0] + '</a></td>');
             }
-            rows.push('  <tr>\n' + cols.join('\n') + '\n<tr>');
+            rows.push('  <tr>\n' + cols.join('\n') + '\n  </tr>');
         }
         var body = '<table class="table">\n' + rows.join('\n') + '\n</table>';
         return [
