@@ -61,6 +61,8 @@
     </style>
   </head>
   <body>
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
     <script type="text/javascript" src="../js/d3.js"></script>
     <script type="text/javascript" src="../js/crossfilter.js"></script>
     <script type="text/javascript" src="../js/dc.js"></script>
@@ -92,10 +94,7 @@
           d3.select('#wait-url').attr('href', location.origin + location.pathname + '?nowait');
       }
 
-      d3.csv('iris.csv', function(error, iris) {
-          if(error)
-              throw new Error(error);
-
+      d3.csv('iris.csv').then(function(iris) {
           iris.forEach(function(d) {
               Object.keys(fields).forEach(function(ab) {
                   d[fields[ab]] = +d[fields[ab]];
@@ -157,8 +156,8 @@
                               .valueAccessor(key_part(1))
                               .colorAccessor(key_part(2))
                               .colorDomain(['setosa', 'versicolor', 'virginica'])
-                              .x(d3.scale.linear()).xAxisPadding("0.001%")
-                              .y(d3.scale.linear()).yAxisPadding("0.001%")
+                              .x(d3.scaleLinear()).xAxisPadding("0.001%")
+                              .y(d3.scaleLinear()).yAxisPadding("0.001%")
                               .brushOn(true)
                               .elasticX(true)
                               .elasticY(true)

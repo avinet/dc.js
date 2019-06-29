@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -95,7 +102,7 @@
  * // create a number display under #chart-container1 element using the default global chart group
  * var display1 = dc.numberDisplay('#chart-container1');
  * @param {String|node|d3.selection} parent - Any valid
- * {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements d3 single selector} specifying
+ * {@link https://github.com/d3/d3-selection/blob/master/README.md#select d3 single selector} specifying
  * a dom block element such as a div; or a dom element or d3 selection.
  * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
  * Interaction with a chart will only trigger events and redraws within the chart's group.
@@ -188,19 +195,23 @@ dc.numberDisplay = function (parent, chartGroup) {
         if (span.empty()) {
             span = span.data([0])
                 .enter()
-                .append('span')
-                .attr('class', SPAN_CLASS);
+                    .append('span')
+                    .attr('class', SPAN_CLASS)
+                .merge(span);
         }
 
         span.transition()
             .duration(_chart.transitionDuration())
             .delay(_chart.transitionDelay())
-            .ease('quad-out-in')
+            .ease(d3.easeQuad)
             .tween('text', function () {
                 // [XA] don't try and interpolate from Infinity, else this breaks.
                 var interpStart = isFinite(_lastValue) ? _lastValue : 0;
                 var interp = d3.interpolateNumber(interpStart || 0, newValue);
                 _lastValue = newValue;
+
+                // need to save it in D3v4
+                var node = this;
                 return function (t) {
                     var html = null, num = _chart.formatNumber()(interp(t));
                     if (newValue === 0 &amp;&amp; (_html.none !== '')) {
@@ -210,7 +221,7 @@ dc.numberDisplay = function (parent, chartGroup) {
                     } else if (_html.some !== '') {
                         html = _html.some;
                     }
-                    this.innerHTML = html ? html.replace('%number', num) : num;
+                    node.innerHTML = html ? html.replace('%number', num) : num;
                 };
             });
     };
@@ -224,7 +235,7 @@ dc.numberDisplay = function (parent, chartGroup) {
      * @method formatNumber
      * @memberof dc.numberDisplay
      * @instance
-     * @see {@link https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md d3.format}
+     * @see {@link https://github.com/d3/d3-format/blob/master/README.md#format d3.format}
      * @param {Function} [formatter=d3.format('.2s')]
      * @returns {Function|dc.numberDisplay}
      */
@@ -277,13 +288,13 @@ dc.numberDisplay = function (parent, chartGroup) {
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

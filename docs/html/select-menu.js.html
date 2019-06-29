@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -119,9 +126,9 @@ dc.selectMenu = function (parent, chartGroup) {
     var _promptValue = null;
     var _numberVisible = null;
     var _order = function (a, b) {
-        return _chart.keyAccessor()(a) > _chart.keyAccessor()(b) ?
-             1 : _chart.keyAccessor()(b) > _chart.keyAccessor()(a) ?
-            -1 : 0;
+        return _chart.keyAccessor()(a) > _chart.keyAccessor()(b) ? 1 :
+            _chart.keyAccessor()(b) > _chart.keyAccessor()(a) ? -1 :
+            0;
     };
 
     var _filterDisplayed = function (d) {
@@ -141,6 +148,14 @@ dc.selectMenu = function (parent, chartGroup) {
         _chart._doRedraw();
         return _chart;
     };
+    // Fixing IE 11 crash when redrawing the chart
+    // see here for list of IE user Agents :
+    // http://www.useragentstring.com/pages/useragentstring.php?name=Internet+Explorer
+    var ua = window.navigator.userAgent;
+    // test for IE 11 but not a lower version (which contains MSIE in UA)
+    if (ua.indexOf('Trident/') > 0 &amp;&amp; ua.indexOf('MSIE') === -1) {
+        _chart.redraw = _chart.render;
+    }
 
     _chart._doRedraw = function () {
         setAttributes();
@@ -149,7 +164,7 @@ dc.selectMenu = function (parent, chartGroup) {
         if (_chart.hasFilter() &amp;&amp; _multiple) {
             _select.selectAll('option')
                 .property('selected', function (d) {
-                    return d &amp;&amp; _chart.filters().indexOf(String(_chart.keyAccessor()(d))) >= 0;
+                    return typeof d !== 'undefined' &amp;&amp; _chart.filters().indexOf(String(_chart.keyAccessor()(d))) >= 0;
                 });
         } else if (_chart.hasFilter()) {
             _select.property('value', _chart.filter());
@@ -163,17 +178,18 @@ dc.selectMenu = function (parent, chartGroup) {
         var options = _select.selectAll('option.' + OPTION_CSS_CLASS)
           .data(_chart.data(), function (d) { return _chart.keyAccessor()(d); });
 
+        options.exit().remove();
+
         options.enter()
               .append('option')
               .classed(OPTION_CSS_CLASS, true)
-              .attr('value', function (d) { return _chart.keyAccessor()(d); });
+              .attr('value', function (d) { return _chart.keyAccessor()(d); })
+            .merge(options)
+              .text(_chart.title());
 
-        options.text(_chart.title());
-        options.exit().remove();
         _select.selectAll('option.' + OPTION_CSS_CLASS).sort(_order);
 
         _select.on('change', onChange);
-        return options;
     }
 
     function onChange (d, i) {
@@ -233,10 +249,11 @@ dc.selectMenu = function (parent, chartGroup) {
      * Get or set the function that controls the ordering of option tags in the
      * select menu. By default options are ordered by the group key in ascending
      * order.
-     * @name order
+     * @method order
      * @memberof dc.selectMenu
      * @instance
      * @param {Function} [order]
+     * @returns {Function|dc.selectMenu}
      * @example
      * // order by the group's value
      * chart.order(function (a,b) {
@@ -253,28 +270,30 @@ dc.selectMenu = function (parent, chartGroup) {
 
     /**
      * Get or set the text displayed in the options used to prompt selection.
-     * @name promptText
+     * @method promptText
      * @memberof dc.selectMenu
      * @instance
      * @param {String} [promptText='Select all']
+     * @returns {String|dc.selectMenu}
      * @example
      * chart.promptText('All states');
      **/
-    _chart.promptText = function (_) {
+    _chart.promptText = function (promptText) {
         if (!arguments.length) {
             return _promptText;
         }
-        _promptText = _;
+        _promptText = promptText;
         return _chart;
     };
 
     /**
      * Get or set the function that filters option tags prior to display. By default options
      * with a value of &lt; 1 are not displayed.
-     * @name filterDisplayed
+     * @method filterDisplayed
      * @memberof dc.selectMenu
      * @instance
      * @param {function} [filterDisplayed]
+     * @returns {Function|dc.selectMenu}
      * @example
      * // display all options override the `filterDisplayed` function:
      * chart.filterDisplayed(function () {
@@ -292,10 +311,11 @@ dc.selectMenu = function (parent, chartGroup) {
     /**
      * Controls the type of select menu. Setting it to true converts the underlying
      * HTML tag into a multiple select.
-     * @name multiple
+     * @method multiple
      * @memberof dc.selectMenu
      * @instance
      * @param {boolean} [multiple=false]
+     * @returns {boolean|dc.selectMenu}
      * @example
      * chart.multiple(true);
      **/
@@ -313,10 +333,11 @@ dc.selectMenu = function (parent, chartGroup) {
      * [dimension.filter](https://github.com/crossfilter/crossfilter/wiki/API-Reference#dimension_filter)
      * when only the prompt value is selected. If `null` (the default), no filtering will occur when
      * just the prompt is selected.
-     * @name promptValue
+     * @method promptValue
      * @memberof dc.selectMenu
      * @instance
      * @param {?*} [promptValue=null]
+     * @returns {*|dc.selectMenu}
      **/
     _chart.promptValue = function (promptValue) {
         if (!arguments.length) {
@@ -331,10 +352,11 @@ dc.selectMenu = function (parent, chartGroup) {
      * Controls the number of items to show in the select menu, when `.multiple()` is true. This
      * controls the [`size` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#Attributes) of
      * the `select` element. If `null` (the default), uses the browser's default height.
-     * @name numberItems
+     * @method numberItems
      * @memberof dc.selectMenu
      * @instance
      * @param {?number} [numberVisible=null]
+     * @returns {number|dc.selectMenu}
      * @example
      * chart.numberVisible(10);
      **/
@@ -390,13 +412,13 @@ dc.selectMenu = function (parent, chartGroup) {
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

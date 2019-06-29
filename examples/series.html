@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>dc.js - Series Example</title>
+    <title>dc.js - Series Chart Example</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
@@ -15,6 +15,8 @@
 <button class="btn" onclick="button2()">2</button>
 <button class="btn" onclick="button3()">3</button>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
 <script type="text/javascript" src="../js/d3.js"></script>
 <script type="text/javascript" src="../js/crossfilter.js"></script>
 <script type="text/javascript" src="../js/dc.js"></script>
@@ -23,7 +25,7 @@
 var chart = dc.seriesChart("#test");
 var ndx, runDimension, runGroup;
 
-d3.csv("morley.csv", function(error, experiments) {
+d3.csv("morley.csv").then(function(experiments) {
 
   ndx = crossfilter(experiments);
   runDimension = ndx.dimension(function(d) {return [+d.Expt, +d.Run]; });
@@ -32,8 +34,8 @@ d3.csv("morley.csv", function(error, experiments) {
   chart
     .width(768)
     .height(480)
-    .chart(function(c) { return dc.lineChart(c).interpolate('cardinal'); })
-    .x(d3.scale.linear().domain([0,20]))
+    .chart(function(c) { return dc.lineChart(c).curve(d3.curveCardinal); })
+    .x(d3.scaleLinear().domain([0,20]))
     .brushOn(false)
     .yAxisLabel("Measured Speed km/s")
     .xAxisLabel("Run")
@@ -55,7 +57,7 @@ d3.csv("morley.csv", function(error, experiments) {
 
 function load_button(file) {
     return function load_it() {
-        d3.csv(file, function(error, experiments) {
+        d3.csv(file).then(function(experiments) {
             ndx.remove();
             ndx.add(experiments);
             dc.redrawAll();

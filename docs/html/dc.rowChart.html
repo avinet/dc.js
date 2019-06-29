@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -181,7 +188,7 @@
             
 
             <td class="description last"><p>Any valid
-<a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements">d3 single selector</a> specifying
+<a href="https://github.com/d3/d3-selection/blob/master/README.md#select">d3 single selector</a> specifying
 a dom block element such as a div; or a dom element or d3 selection.</p></td>
         </tr>
 
@@ -325,10 +332,7 @@ Interaction with a chart will only trigger events and redraws within the chart's
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// create a row chart under #chart-container1 element using the default global chart group
-var chart1 = dc.rowChart(&#x27;#chart-container1&#x27;);
-// create a row chart under #chart-container2 element using chart group A
-var chart2 = dc.rowChart(&#x27;#chart-container2&#x27;, &#x27;chartGroupA&#x27;);</pre>
+    <pre class="sunlight-highlight-javascript">// create a row chart under #chart-container1 element using the default global chart groupvar chart1 = dc.rowChart(&#x27;#chart-container1&#x27;);// create a row chart under #chart-container2 element using chart group Avar chart2 = dc.rowChart(&#x27;#chart-container2&#x27;, &#x27;chartGroupA&#x27;);</pre>
 
 
     
@@ -364,7 +368,7 @@ var chart2 = dc.rowChart(&#x27;#chart-container2&#x27;, &#x27;chartGroupA&#x27;)
 
     
     <div class="description">
-        <p>Get or set the elasticity on x axis. If this attribute is set to true, then the x axis will rescle to auto-fit the
+        <p>Get or set the elasticity on x axis. If this attribute is set to true, then the x axis will rescale to auto-fit the
 data range when filtered.</p>
     </div>
     
@@ -474,7 +478,7 @@ data range when filtered.</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-348">line 348</a>
+				 <a href="row-chart.js.html#sunlight-1-line-358">line 358</a>
 			</li>
 		</ul>
 	</dd>
@@ -661,7 +665,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-311">line 311</a>
+				 <a href="row-chart.js.html#sunlight-1-line-321">line 321</a>
 			</li>
 		</ul>
 	</dd>
@@ -851,7 +855,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-332">line 332</a>
+				 <a href="row-chart.js.html#sunlight-1-line-342">line 342</a>
 			</li>
 		</ul>
 	</dd>
@@ -1032,7 +1036,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-365">line 365</a>
+				 <a href="row-chart.js.html#sunlight-1-line-375">line 375</a>
 			</li>
 		</ul>
 	</dd>
@@ -1213,7 +1217,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-381">line 381</a>
+				 <a href="row-chart.js.html#sunlight-1-line-391">line 391</a>
 			</li>
 		</ul>
 	</dd>
@@ -1394,7 +1398,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-260">line 260</a>
+				 <a href="row-chart.js.html#sunlight-1-line-263">line 263</a>
 			</li>
 		</ul>
 	</dd>
@@ -1575,7 +1579,7 @@ your vertical gap space).</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-398">line 398</a>
+				 <a href="row-chart.js.html#sunlight-1-line-408">line 408</a>
 			</li>
 		</ul>
 	</dd>
@@ -1640,7 +1644,7 @@ your vertical gap space).</p>
     
     <div class="description">
         <p>Gets or sets the x scale. The x scale can be any d3
-<a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Quantitative-Scales.md">quantitive scale</a>.</p>
+<a href="https://github.com/d3/d3-scale/blob/master/README.md">d3.scale</a>.</p>
     </div>
     
 
@@ -1761,7 +1765,7 @@ your vertical gap space).</p>
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Quantitative-Scales.md">quantitive scale</a></li>
+			<li><a href="https://github.com/d3/d3-scale/blob/master/README.md">d3.scale</a></li>
 			</ul>
 	</dd>
 	
@@ -1812,7 +1816,7 @@ your vertical gap space).</p>
             
 <hr>
 <dt>
-    <h4 class="name" id="xAxis"><span class="type-signature"></span>xAxis()</h4>
+    <h4 class="name" id="xAxis"><span class="type-signature"></span>xAxis( [xAxis])</h4>
     
     
 </dt>
@@ -1820,8 +1824,8 @@ your vertical gap space).</p>
 
     
     <div class="description">
-        <p>Get the x axis for the row chart instance.  Note: not settable for row charts.
-See the <a href="https://github.com/d3/d3-3.x-api-reference/blob/master/SVG-Axes.md#axis">d3 axis object</a>
+        <p>Get or sets the x axis for the row chart instance.
+See the <a href="https://github.com/d3/d3-axis/blob/master/README.md">d3.axis</a>
 documention for more information.</p>
     </div>
     
@@ -1831,6 +1835,68 @@ documention for more information.</p>
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>xAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">d3.axis</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -1869,7 +1935,7 @@ documention for more information.</p>
 		<ul class="dummy">
 			<li>
 				<a href="row-chart.js.html">row-chart.js</a>,
-				 <a href="row-chart.js.html#sunlight-1-line-292">line 292</a>
+				 <a href="row-chart.js.html#sunlight-1-line-295">line 295</a>
 			</li>
 		</ul>
 	</dd>
@@ -1877,13 +1943,6 @@ documention for more information.</p>
 
 	
 
-	
-	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
-	<dd class="tag-see">
-		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/SVG-Axes.md#axis">d3.svg.axis</a></li>
-			</ul>
-	</dd>
 	
 
 	
@@ -1912,7 +1971,10 @@ documention for more information.</p>
     </dt>
     <dd>
         
-<span class="param-type">d3.svg.axis</span>
+<span class="param-type">d3.axis</span>
+|
+
+<span class="param-type"><a href="dc.rowChart.html">dc.rowChart</a></span>
 
 
 
@@ -1925,10 +1987,7 @@ documention for more information.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// customize x axis tick format
-chart.xAxis().tickFormat(function (v) {return v + &#x27;%&#x27;;});
-// customize x axis tick values
-chart.xAxis().tickValues([0, 100, 200, 300]);</pre>
+    <pre class="sunlight-highlight-javascript">// customize x axis tick formatchart.xAxis().tickFormat(function (v) {return v + &#x27;%&#x27;;});// customize x axis tick valueschart.xAxis().tickValues([0, 100, 200, 300]);// use a top-oriented axis. Note: position of the axis and grid lines will need to// be set manually, see https://dc-js.github.io/dc.js/examples/row-top-axis.htmlchart.xAxis(d3.axisTop())</pre>
 
 
     
@@ -1982,13 +2041,13 @@ chart.xAxis().tickValues([0, 100, 200, 300]);</pre>
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

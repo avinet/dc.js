@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>dc.js Source: filter-input.js</title>
+	<title>dc.js Source: chart-ext/colorscales.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -79,121 +86,84 @@
 		<div id="main">
 			
 
-		<h1 class="page-title">Source: filter-input.js</h1>
+		<h1 class="page-title">Source: chart-ext/colorscales.js</h1>
     
 <section>
     <article>
         <pre
-            class="sunlight-highlight-javascript linenums">/**
-## input Filter Widget
-Includes: [Base Mixin](#base-mixin)
+            class="sunlight-highlight-javascript linenums">dc.statColorScales = {
+    /**
+     * Color scale custom for adm-board
+     *
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
+    admOrdinal: function () {
+        return d3.scale.ordinal().range([
+            '#FF0200', '#D9007B', '#FF6700',
+            '#FEFF00', '#00CC05', '#0053CC',
+            '#8B00CC', '#FF0200', '#FFCD00',
+            '#A8E500', '#0098CC'
+        ]);
+    },
+  
+    /**
+     * Color scale from iPodNano apps
+     *
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
+    iPodNano: function () {
+        return d3.scale.ordinal().range([
+            '#8569CF', '#0D9FD8', '#8AD749',
+            '#EECE00', '#F8981F', '#F80E27',
+            '#F640AE', '#E2E2E2', '#787679'
+        ]);
+    },
+  
+    /**
+     * Color scale from Google
+     * @param {*} highlightColor Color to be used for highlighting
+     * @param {*} highlightSeries Series data
+     * 
+     * @return {d3.scale.ordinal} A color scale that may be used by diagrams
+     */
 
-The input filter data widget is a simple widget designed to display an input field allowing to filter the data
-that matches the text typed. 
-
-As opposed to the other graphs, this doesn't display any result and doesn't update its display, it's just to input an filter other graphs
-
-Examples:
-
-#### dc.inputFilter(parent[, chartGroup])
-Create an input widget and attach it to the given parent element.
-
-Parameters:
-
-* parent : string | node | selection - any valid
- [d3 single selector](https://github.com/mbostock/d3/wiki/Selections#selecting-elements) specifying
- a dom block element such as a div; or a dom element or d3 selection.
-* chartGroup : string (optional) - name of the chart group this widget should be placed in.
-
-Returns:
-A newly created input widget instance
-#### .dimension(data) - **mandatory**
-
-```js
-var data=[{"firstname":"John","lastname":"Coltrane"}{"firstname":"Miles",lastname:"Davis"] 
-var ndx = crossfilter(data);
-var dimension = ndx.dimension(function(d) {
-  return d.lastname.toLowerCase() + " "+ d.firstname.toLowerCase();
-});
-
-dc.inputFilter('.search')
-    .dimension(dimension);
-    // you don't need the group() function
-```
-
-**/
-
-dc.inputFilter = function (parent, chartGroup) {
-    var _chart = dc.baseMixin({});
-    var _html = function() {return "&lt;input class='form-control input-lg' placeholder='search'/>"};
-    var _normalize = function (s) { return s.toLowerCase()};
-    var _filterFunction = function(q) { 
-      _chart.dimension().filterFunction(function (d){return d.indexOf (q) !== -1;});
-    };
-    var _throttleDuration=200;
-    var _throttleTimer;
-
-    _chart.group(function (){throw "the group function on inputFilter should never be called, please report the issue"});
-
-    _chart._doRender = function () {
-      _chart.root().html(_html());
-
-      _chart.root().selectAll("input").on("input", function() {
-        _filterFunction(_normalize(this.value));
-        _throttle();
-      });
-      return _chart;
-    };
-
-    function _throttle() {
-      window.clearTimeout(_throttleTimer);
-      _throttleTimer = window.setTimeout(function() {
-          dc.redrawAll();
-      }, _throttleDuration);
+    google: function (highlightSeries, highlightColor) {
+        var cs = d3.scale.ordinal().range([
+            '#3366cc', '#dc3912', '#ff9900', '#109618',
+            '#990099', '#0099c6', '#dd4477', '#66aa00',
+            '#b82e2e', '#316395', '#994499', '#22aa99',
+            '#aaaa11', '#6633cc', '#e67300', '#8b0707',
+            '#651067', '#329262', '#5574a6', '#3b3eac'
+        ]);
+  
+        if (highlightSeries !== undefined &amp;&amp; highlightSeries.constructor === Array &amp;&amp;
+          highlightSeries.length > 0 &amp;&amp; highlightColor !== undefined) {
+            return function (value) {
+                if (highlightSeries.indexOf(value) !== -1) {
+                    return highlightColor;
+                } else {
+                    return cs(value);
+                }
+            };
+        } else {
+            return function (value) {
+                return cs(value);
+            };
+        }
+    },
+  
+    plannedActual: function () {
+        return d3.scale.ordinal().domain([
+            'Black',
+            'Planned',
+            'Actual'
+        ]).range([
+            '#000000',
+            '#3366cc',
+            '#dc3912'
+        ]);
     }
-
-    _chart._doRedraw = function () {
-      return _chart;
-    };
-
-    _chart.html = function (s) {
-        if (!arguments.length) {
-            return _html;
-        }
-        if (typeof s == "string")
-          _html = function (){return s};
-        else
-          _html = s;
-        return _chart;
-    };
-
-    _chart.normalize = function (s) {
-        if (!arguments.length) {
-            return _normalize;
-        }
-        _normalize = s;
-        return _chart;
-    };
-
-    _chart.filterFunction = function (s) {
-        if (!arguments.length) {
-            return _filterFunction;
-        }
-        _filterFunction = s;
-        return _chart;
-    };
-
-    _chart.throttleDuration = function (s) {
-        if (!arguments.length) {
-            return _throttleDuration;
-        }
-        _throttleDuration = s;
-        return _chart;
-    };
-
-    return _chart.anchor(parent, chartGroup);
-};
-</pre>
+};</pre>
     </article>
 </section>
 
@@ -232,13 +202,13 @@ dc.inputFilter = function (parent, chartGroup) {
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon May 22nd 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

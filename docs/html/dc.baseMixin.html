@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -297,7 +304,7 @@ than crossfilter.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-940">line 940</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-946">line 946</a>
 			</li>
 		</ul>
 	</dd>
@@ -349,16 +356,7 @@ than crossfilter.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default add filter handler
-chart.addFilterHandler(function (filters, filter) {
-    filters.push(filter);
-    return filters;
-});
-
-// custom filter handler (no-op)
-chart.addFilterHandler(function(filters, filter) {
-    return filters;
-});</pre>
+    <pre class="sunlight-highlight-javascript">// default add filter handlerchart.addFilterHandler(function (filters, filter) {    filters.push(filter);    return filters;});// custom filter handler (no-op)chart.addFilterHandler(function(filters, filter) {    return filters;});</pre>
 
 
     
@@ -376,7 +374,7 @@ chart.addFilterHandler(function(filters, filter) {
 
     
     <div class="description">
-        <p>Set the root SVGElement to either be an existing chart's root; or any valid <a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements">d3 single
+        <p>Set the root SVGElement to either be an existing chart's root; or any valid <a href="https://github.com/d3/d3-selection/blob/master/README.md#selecting-elements">d3 single
 selector</a> specifying a dom
 block element such as a div; or a dom element or d3 selection. Optionally registers the chart
 within the chartGroup. This class is called internally on chart initialization, but be called
@@ -529,7 +527,7 @@ again to relocate the chart. However, it will orphan any previously created SVGE
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-416">line 416</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-418">line 418</a>
 			</li>
 		</ul>
 	</dd>
@@ -646,7 +644,7 @@ again to relocate the chart. However, it will orphan any previously created SVGE
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-454">line 454</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-459">line 459</a>
 			</li>
 		</ul>
 	</dd>
@@ -817,7 +815,7 @@ together since it is expected they share the same underlying crossfilter data se
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1421">line 1421</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1434">line 1434</a>
 			</li>
 		</ul>
 	</dd>
@@ -928,7 +926,7 @@ together since it is expected they share the same underlying crossfilter data se
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1481">line 1481</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1494">line 1494</a>
 			</li>
 		</ul>
 	</dd>
@@ -981,7 +979,7 @@ together since it is expected they share the same underlying crossfilter data se
             
 <hr>
 <dt>
-    <h4 class="name" id="commitHandler"><span class="type-signature"></span>commitHandler()</h4>
+    <h4 class="name" id="commitHandler"><span class="type-signature"></span>commitHandler(commitHandler)</h4>
     
     
 </dt>
@@ -993,7 +991,7 @@ together since it is expected they share the same underlying crossfilter data se
 the chart's filters have changed, in order to send the filter data asynchronously to a server.</p>
 <p>Unlike other functions in dc.js, the commit handler is asynchronous. It takes two arguments:
 a flag indicating whether this is a render (true) or a redraw (false), and a callback to be
-triggered once the commit is filtered. The callback has the standard node.js continuation signature
+triggered once the commit is done. The callback has the standard node.js continuation signature
 with error first and result second.</p>
     </div>
     
@@ -1003,6 +1001,56 @@ with error first and result second.</p>
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>commitHandler</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -1041,7 +1089,7 @@ with error first and result second.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-754">line 754</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-759">line 759</a>
 			</li>
 		</ul>
 	</dd>
@@ -1220,7 +1268,7 @@ chart reset and filter controls, for less disruption to the layout.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-574">line 574</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-579">line 579</a>
 			</li>
 		</ul>
 	</dd>
@@ -1448,10 +1496,7 @@ This behavior may be modified to, for instance, return only the top 5 groups.</p
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Default data function
-chart.data(function (group) { return group.all(); });
-
-chart.data(function (group) { return group.top(5); });</pre>
+    <pre class="sunlight-highlight-javascript">// Default data functionchart.data(function (group) { return group.all(); });chart.data(function (group) { return group.top(5); });</pre>
 
 
     
@@ -1641,9 +1686,7 @@ the current dimension will be returned.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">var index = crossfilter([]);
-var dimension = index.dimension(dc.pluck(&#x27;key&#x27;));
-chart.dimension(dimension);</pre>
+    <pre class="sunlight-highlight-javascript">var index = crossfilter([]);var dimension = index.dimension(dc.pluck(&#x27;key&#x27;));chart.dimension(dimension);</pre>
 
 
     
@@ -1713,7 +1756,7 @@ clear the cache to make sure charts are rendered properly.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1444">line 1444</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1457">line 1457</a>
 			</li>
 		</ul>
 	</dd>
@@ -1782,7 +1825,8 @@ is given.</p>
 filters, removed if it is present)</li>
 <li>An array containing a single array of values (<code>[[value,value,value]]</code>): each value is
 toggled</li>
-<li>When appropriate for the chart, a <a href="dc.filters.html">dc filter object</a> such as<ul>
+<li>When appropriate for the chart, a <a href="dc.filters.html">dc filter object</a> such as
+<ul>
 <li><a href="dc.filters.RangedFilter.html"><code>dc.filters.RangedFilter</code></a> for the
 <a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a> charts</li>
 <li><a href="dc.filters.TwoDimensionalFilter.html"><code>dc.filters.TwoDimensionalFilter</code></a> for the
@@ -1913,7 +1957,7 @@ crossfilter dimension, using the <a href="dc.baseMixin.html#filterHandler">filte
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1033">line 1033</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1039">line 1039</a>
 			</li>
 		</ul>
 	</dd>
@@ -1975,15 +2019,7 @@ crossfilter dimension, using the <a href="dc.baseMixin.html#filterHandler">filte
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// filter by a single string
-chart.filter(&#x27;Sunday&#x27;);
-// filter by a single age
-chart.filter(18);
-// filter by a set of states
-chart.filter([[&#x27;MA&#x27;, &#x27;TX&#x27;, &#x27;ND&#x27;, &#x27;WA&#x27;]]);
-// filter by range -- note the use of dc.filters.RangedFilter, which is different
-// from the syntax for filtering a crossfilter dimension directly, dimension.filter([15,20])
-chart.filter(dc.filters.RangedFilter(15,20));</pre>
+    <pre class="sunlight-highlight-javascript">// filter by a single stringchart.filter(&#x27;Sunday&#x27;);// filter by a single agechart.filter(18);// filter by a set of stateschart.filter([[&#x27;MA&#x27;, &#x27;TX&#x27;, &#x27;ND&#x27;, &#x27;WA&#x27;]]);// filter by range -- note the use of dc.filters.RangedFilter, which is different// from the syntax for filtering a crossfilter dimension directly, dimension.filter([15,20])chart.filter(dc.filters.RangedFilter(15,20));</pre>
 
 
     
@@ -2221,7 +2257,7 @@ before or after filtering.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1165">line 1165</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1178">line 1178</a>
 			</li>
 		</ul>
 	</dd>
@@ -2280,41 +2316,7 @@ before or after filtering.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// the default filter handler handles all possible cases for the charts in dc.js
-// you can replace it with something more specialized for your own chart
-chart.filterHandler(function (dimension, filters) {
-    if (filters.length === 0) {
-        // the empty case (no filtering)
-        dimension.filter(null);
-    } else if (filters.length === 1 &amp;&amp; !filters[0].isFiltered) {
-        // single value and not a function-based filter
-        dimension.filterExact(filters[0]);
-    } else if (filters.length === 1 &amp;&amp; filters[0].filterType === &#x27;RangedFilter&#x27;) {
-        // single range-based filter
-        dimension.filterRange(filters[0]);
-    } else {
-        // an array of values, or an array of filter objects
-        dimension.filterFunction(function (d) {
-            for (var i = 0; i &lt; filters.length; i++) {
-                var filter = filters[i];
-                if (filter.isFiltered &amp;&amp; filter.isFiltered(d)) {
-                    return true;
-                } else if (filter &lt;= d &amp;&amp; filter &gt;= d) {
-                    return true;
-                }
-            }
-            return false;
-        });
-    }
-    return filters;
-});
-
-// custom filter handler
-chart.filterHandler(function(dimension, filter){
-    var newFilter = filter + 10;
-    dimension.filter(newFilter);
-    return newFilter; // set the actual filter value to the new value
-});</pre>
+    <pre class="sunlight-highlight-javascript">// the default filter handler handles all possible cases for the charts in dc.js// you can replace it with something more specialized for your own chartchart.filterHandler(function (dimension, filters) {    if (filters.length === 0) {        // the empty case (no filtering)        dimension.filter(null);    } else if (filters.length === 1 &amp;&amp; !filters[0].isFiltered) {        // single value and not a function-based filter        dimension.filterExact(filters[0]);    } else if (filters.length === 1 &amp;&amp; filters[0].filterType === &#x27;RangedFilter&#x27;) {        // single range-based filter        dimension.filterRange(filters[0]);    } else {        // an array of values, or an array of filter objects        dimension.filterFunction(function (d) {            for (var i = 0; i &lt; filters.length; i++) {                var filter = filters[i];                if (filter.isFiltered &amp;&amp; filter.isFiltered(d)) {                    return true;                } else if (filter &lt;= d &amp;&amp; filter &gt;= d) {                    return true;                }            }            return false;        });    }    return filters;});// custom filter handlerchart.filterHandler(function(dimension, filter){    var newFilter = filter + 10;    dimension.filter(newFilter);    return newFilter; // set the actual filter value to the new value});</pre>
 
 
     
@@ -2453,7 +2455,7 @@ that provides simple printing support for both single value and ranged filters.<
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-543">line 543</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-548">line 548</a>
 			</li>
 		</ul>
 	</dd>
@@ -2505,15 +2507,7 @@ that provides simple printing support for both single value and ranged filters.<
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// for a chart with an ordinal brush, print the filters in upper case
-chart.filterPrinter(function(filters) {
-  return filters.map(function(f) { return f.toUpperCase(); }).join(&#x27;, &#x27;);
-});
-// for a chart with a range brush, print the filter as start and extent
-chart.filterPrinter(function(filters) {
-  return &#x27;start &#x27; + dc.utils.printSingleValue(filters[0][0]) +
-    &#x27; extent &#x27; + dc.utils.printSingleValue(filters[0][1] - filters[0][0]);
-});</pre>
+    <pre class="sunlight-highlight-javascript">// for a chart with an ordinal brush, print the filters in upper casechart.filterPrinter(function(filters) {  return filters.map(function(f) { return f.toUpperCase(); }).join(&#x27;, &#x27;);});// for a chart with a range brush, print the filter as start and extentchart.filterPrinter(function(filters) {  return &#x27;start &#x27; + dc.utils.printSingleValue(filters[0][0]) +    &#x27; extent &#x27; + dc.utils.printSingleValue(filters[0][1] - filters[0][0]);});</pre>
 
 
     
@@ -2580,7 +2574,7 @@ chart's internal filter storage.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1121">line 1121</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1127">line 1127</a>
 			</li>
 		</ul>
 	</dd>
@@ -2849,10 +2843,7 @@ If <code>name</code> is specified then it will be used to generate legend label.
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">var index = crossfilter([]);
-var dimension = index.dimension(dc.pluck(&#x27;key&#x27;));
-chart.dimension(dimension);
-chart.group(dimension.group(crossfilter.reduceSum()));</pre>
+    <pre class="sunlight-highlight-javascript">var index = crossfilter([]);var dimension = index.dimension(dc.pluck(&#x27;key&#x27;));chart.dimension(dimension);chart.group(dimension.group(crossfilter.reduceSum()));</pre>
 
 
     
@@ -2980,7 +2971,7 @@ This function is <strong>not chainable</strong>.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-874">line 874</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-880">line 880</a>
 			</li>
 		</ul>
 	</dd>
@@ -3159,7 +3150,7 @@ you to change the way filters are checked for and replaced.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-841">line 841</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-847">line 847</a>
 			</li>
 		</ul>
 	</dd>
@@ -3211,20 +3202,7 @@ you to change the way filters are checked for and replaced.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default has-filter handler
-chart.hasFilterHandler(function (filters, filter) {
-    if (filter === null || typeof(filter) === &#x27;undefined&#x27;) {
-        return filters.length &gt; 0;
-    }
-    return filters.some(function (f) {
-        return filter &lt;= f &amp;&amp; filter &gt;= f;
-    });
-});
-
-// custom filter handler (no-op)
-chart.hasFilterHandler(function(filters, filter) {
-    return false;
-});</pre>
+    <pre class="sunlight-highlight-javascript">// default has-filter handlerchart.hasFilterHandler(function (filters, filter) {    if (filter === null || typeof(filter) === &#x27;undefined&#x27;) {        return filters.length &gt; 0;    }    return filters.some(function (f) {        return filter &lt;= f &amp;&amp; filter &gt;= f;    });});// custom filter handler (no-op)chart.hasFilterHandler(function(filters, filter) {    return false;});</pre>
 
 
     
@@ -3421,15 +3399,7 @@ the chart to the default behavior.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Default height
-chart.height(function (element) {
-    var height = element &amp;&amp; element.getBoundingClientRect &amp;&amp; element.getBoundingClientRect().height;
-    return (height &amp;&amp; height &gt; chart.minHeight()) ? height : chart.minHeight();
-});
-
-chart.height(250); // Set the chart&#x27;s height to 250px;
-chart.height(function(anchor) { return doSomethingWith(anchor); }); // set the chart&#x27;s height with a function
-chart.height(null); // reset the height to the default auto calculation</pre>
+    <pre class="sunlight-highlight-javascript">// Default heightchart.height(function (element) {    var height = element &amp;&amp; element.getBoundingClientRect &amp;&amp; element.getBoundingClientRect().height;    return (height &amp;&amp; height &gt; chart.minHeight()) ? height : chart.minHeight();});chart.height(250); // Set the chart&#x27;s height to 250px;chart.height(function(anchor) { return doSomethingWith(anchor); }); // set the chart&#x27;s height with a functionchart.height(null); // reset the height to the default auto calculation</pre>
 
 
     
@@ -3558,7 +3528,7 @@ example keys correspond to slices in a pie chart and x axis positions in a grid 
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1253">line 1253</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1266">line 1266</a>
 			</li>
 		</ul>
 	</dd>
@@ -3610,10 +3580,7 @@ example keys correspond to slices in a pie chart and x axis positions in a grid 
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default key accessor
-chart.keyAccessor(function(d) { return d.key; });
-// custom key accessor for a multi-value crossfilter reduction
-chart.keyAccessor(function(p) { return p.value.absGain; });</pre>
+    <pre class="sunlight-highlight-javascript">// default key accessorchart.keyAccessor(function(d) { return d.key; });// custom key accessor for a multi-value crossfilter reductionchart.keyAccessor(function(p) { return p.value.absGain; });</pre>
 
 
     
@@ -3789,7 +3756,7 @@ at all. By default, enables labels; pass false for the second parameter if this 
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1300">line 1300</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1313">line 1313</a>
 			</li>
 		</ul>
 	</dd>
@@ -3841,10 +3808,7 @@ at all. By default, enables labels; pass false for the second parameter if this 
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default label function just return the key
-chart.label(function(d) { return d.key; });
-// label function has access to the standard d3 data binding and can get quite complicated
-chart.label(function(d) { return d.data.key + &#x27;(&#x27; + Math.floor(d.data.value / all.value() * 100) + &#x27;%)&#x27;; });</pre>
+    <pre class="sunlight-highlight-javascript">// default label function just return the keychart.label(function(d) { return d.key; });// label function has access to the standard d3 data binding and can get quite complicatedchart.label(function(d) { return d.data.key + &#x27;(&#x27; + Math.floor(d.data.value / all.value() * 100) + &#x27;%)&#x27;; });</pre>
 
 
     
@@ -3972,7 +3936,7 @@ based on the color setting and names associated with each group.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1461">line 1461</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1474">line 1474</a>
 			</li>
 		</ul>
 	</dd>
@@ -4555,7 +4519,7 @@ including all renderlets' logic.</li>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1530">line 1530</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1543">line 1543</a>
 			</li>
 		</ul>
 	</dd>
@@ -4567,7 +4531,7 @@ including all renderlets' logic.</li>
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Internals.md#dispatch_on">d3.dispatch.on</a></li>
+			<li><a href="https://github.com/d3/d3-dispatch/blob/master/README.md#dispatch_on">d3.dispatch.on</a></li>
 			</ul>
 	</dd>
 	
@@ -4611,14 +4575,7 @@ including all renderlets' logic.</li>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">.on(&#x27;renderlet&#x27;, function(chart, filter){...})
-.on(&#x27;pretransition&#x27;, function(chart, filter){...})
-.on(&#x27;preRender&#x27;, function(chart){...})
-.on(&#x27;postRender&#x27;, function(chart){...})
-.on(&#x27;preRedraw&#x27;, function(chart){...})
-.on(&#x27;postRedraw&#x27;, function(chart){...})
-.on(&#x27;filtered&#x27;, function(chart, filter){...})
-.on(&#x27;zoomed&#x27;, function(chart, filter){...})</pre>
+    <pre class="sunlight-highlight-javascript">.on(&#x27;renderlet&#x27;, function(chart, filter){...}).on(&#x27;pretransition&#x27;, function(chart, filter){...}).on(&#x27;preRender&#x27;, function(chart){...}).on(&#x27;postRender&#x27;, function(chart){...}).on(&#x27;preRedraw&#x27;, function(chart){...}).on(&#x27;postRedraw&#x27;, function(chart){...}).on(&#x27;filtered&#x27;, function(chart, filter){...}).on(&#x27;zoomed&#x27;, function(chart, filter){...})</pre>
 
 
     
@@ -4638,6 +4595,7 @@ including all renderlets' logic.</li>
     <div class="description">
         <p>This function is passed to d3 as the onClick handler for each chart. The default behavior is to
 filter on the clicked datum (passed to the callback) and redraw the chart group.</p>
+<p>This function can be replaced in order to change the click behavior (but first look at</p>
     </div>
     
 
@@ -4734,7 +4692,7 @@ filter on the clicked datum (passed to the callback) and redraw the chart group.
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1149">line 1149</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1155">line 1155</a>
 			</li>
 		</ul>
 	</dd>
@@ -4759,6 +4717,32 @@ filter on the clicked datum (passed to the callback) and redraw the chart group.
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">var oldHandler = chart.onClick;chart.onClick = function(datum) {  // use datum.</pre>
+
 
     
 </dd>
@@ -4873,7 +4857,7 @@ the same name to be called with the value to set that attribute for the chart.</
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1492">line 1492</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1505">line 1505</a>
 			</li>
 		</ul>
 	</dd>
@@ -5110,8 +5094,7 @@ to sort elements; this accessor returns the value to order on.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Default ordering accessor
-_chart.ordering(dc.pluck(&#x27;key&#x27;));</pre>
+    <pre class="sunlight-highlight-javascript">// Default ordering accessor_chart.ordering(dc.pluck(&#x27;key&#x27;));</pre>
 
 
     
@@ -5182,7 +5165,7 @@ data is loaded in the background using
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-726">line 726</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-731">line 731</a>
 			</li>
 		</ul>
 	</dd>
@@ -5292,7 +5275,7 @@ be executed and waited for.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-775">line 775</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-781">line 781</a>
 			</li>
 		</ul>
 	</dd>
@@ -5466,7 +5449,7 @@ using a filter server other than crossfilter.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-898">line 898</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-904">line 904</a>
 			</li>
 		</ul>
 	</dd>
@@ -5518,21 +5501,7 @@ using a filter server other than crossfilter.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default remove filter handler
-chart.removeFilterHandler(function (filters, filter) {
-    for (var i = 0; i &lt; filters.length; i++) {
-        if (filters[i] &lt;= filter &amp;&amp; filters[i] &gt;= filter) {
-            filters.splice(i, 1);
-            break;
-        }
-    }
-    return filters;
-});
-
-// custom filter handler (no-op)
-chart.removeFilterHandler(function(filters, filter) {
-    return filters;
-});</pre>
+    <pre class="sunlight-highlight-javascript">// default remove filter handlerchart.removeFilterHandler(function (filters, filter) {    for (var i = 0; i &lt; filters.length; i++) {        if (filters[i] &lt;= filter &amp;&amp; filters[i] &gt;= filter) {            filters.splice(i, 1);            break;        }    }    return filters;});// custom filter handler (no-op)chart.removeFilterHandler(function(filters, filter) {    return filters;});</pre>
 
 
     
@@ -5600,7 +5569,7 @@ behaviour.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-679">line 679</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-684">line 684</a>
 			</li>
 		</ul>
 	</dd>
@@ -5709,7 +5678,7 @@ commitHandler, it will be executed and waited for</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-799">line 799</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-805">line 805</a>
 			</li>
 		</ul>
 	</dd>
@@ -5887,7 +5856,7 @@ commitHandler, it will be executed and waited for</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1328">line 1328</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1341">line 1341</a>
 			</li>
 		</ul>
 	</dd>
@@ -6063,7 +6032,7 @@ Generates a random key for the renderlet, which makes it hard to remove.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1392">line 1392</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1405">line 1405</a>
 			</li>
 		</ul>
 	</dd>
@@ -6112,13 +6081,7 @@ Generates a random key for the renderlet, which makes it hard to remove.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// do this instead of .renderlet(function(chart) { ... })
-chart.on(&quot;renderlet&quot;, function(chart){
-    // mix of dc API and d3 manipulation
-    chart.select(&#x27;g.y&#x27;).style(&#x27;display&#x27;, &#x27;none&#x27;);
-    // its a closure so you can also access other chart variable available in the closure scope
-    moveChart.filter(chart.filter());
-});</pre>
+    <pre class="sunlight-highlight-javascript">// do this instead of .renderlet(function(chart) { ... })chart.on(&quot;renderlet&quot;, function(chart){    // mix of dc API and d3 manipulation    chart.select(&#x27;g.y&#x27;).style(&#x27;display&#x27;, &#x27;none&#x27;);    // its a closure so you can also access other chart variable available in the closure scope    moveChart.filter(chart.filter());});</pre>
 
 
     
@@ -6254,7 +6217,7 @@ given.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1375">line 1375</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1388">line 1388</a>
 			</li>
 		</ul>
 	</dd>
@@ -6428,7 +6391,7 @@ but more efficient because the filter is only applied once.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1017">line 1017</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1023">line 1023</a>
 			</li>
 		</ul>
 	</dd>
@@ -6602,7 +6565,7 @@ e.g. when using a filter server other than crossfilter.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-976">line 976</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-982">line 982</a>
 			</li>
 		</ul>
 	</dd>
@@ -6651,15 +6614,7 @@ e.g. when using a filter server other than crossfilter.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default remove filter handler
-function (filters) {
-    return [];
-}
-
-// custom filter handler (no-op)
-chart.resetFilterHandler(function(filters) {
-    return filters;
-});</pre>
+    <pre class="sunlight-highlight-javascript">// default remove filter handlerfunction (filters) {    return [];}// custom filter handler (no-op)chart.resetFilterHandler(function(filters) {    return filters;});</pre>
 
 
     
@@ -6724,7 +6679,7 @@ chart.resetFilterHandler(function(filters) {
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-511">line 511</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-516">line 516</a>
 			</li>
 		</ul>
 	</dd>
@@ -6904,7 +6859,7 @@ unexpected consequences.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-472">line 472</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-477">line 477</a>
 			</li>
 		</ul>
 	</dd>
@@ -6967,7 +6922,7 @@ unexpected consequences.</p>
             
 <hr>
 <dt>
-    <h4 class="name" id="select"><span class="type-signature"></span>select()</h4>
+    <h4 class="name" id="select"><span class="type-signature"></span>select(sel)</h4>
     
     
 </dt>
@@ -6987,6 +6942,56 @@ selection result can be chained to d3 function calls.</p>
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>CSS selector string</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -7037,7 +7042,7 @@ selection result can be chained to d3 function calls.</p>
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#d3_select">d3.select</a></li>
+			<li><a href="https://github.com/d3/d3-selection/blob/master/README.md#select">d3.select</a></li>
 			</ul>
 	</dd>
 	
@@ -7081,8 +7086,7 @@ selection result can be chained to d3 function calls.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Has the same effect as d3.select(&#x27;#chart-id&#x27;).select(selector)
-chart.select(selector)</pre>
+    <pre class="sunlight-highlight-javascript">// Has the same effect as d3.select(&#x27;#chart-id&#x27;).select(selector)chart.select(selector)</pre>
 
 
     
@@ -7092,7 +7096,7 @@ chart.select(selector)</pre>
             
 <hr>
 <dt>
-    <h4 class="name" id="selectAll"><span class="type-signature"></span>selectAll()</h4>
+    <h4 class="name" id="selectAll"><span class="type-signature"></span>selectAll(sel)</h4>
     
     
 </dt>
@@ -7111,6 +7115,56 @@ selection result can be chained to d3 function calls.</p>
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>CSS selector string</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -7149,7 +7203,7 @@ selection result can be chained to d3 function calls.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-398">line 398</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-399">line 399</a>
 			</li>
 		</ul>
 	</dd>
@@ -7161,7 +7215,7 @@ selection result can be chained to d3 function calls.</p>
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#d3_selectAll">d3.selectAll</a></li>
+			<li><a href="https://github.com/d3/d3-selection/blob/master/README.md#selectAll">d3.selectAll</a></li>
 			</ul>
 	</dd>
 	
@@ -7205,8 +7259,7 @@ selection result can be chained to d3 function calls.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Has the same effect as d3.select(&#x27;#chart-id&#x27;).selectAll(selector)
-chart.selectAll(selector)</pre>
+    <pre class="sunlight-highlight-javascript">// Has the same effect as d3.select(&#x27;#chart-id&#x27;).selectAll(selector)chart.selectAll(selector)</pre>
 
 
     
@@ -7338,7 +7391,7 @@ of dc internals may have unexpected consequences.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-492">line 492</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-497">line 497</a>
 			</li>
 		</ul>
 	</dd>
@@ -7525,7 +7578,7 @@ otherwise the brush layer will block tooltip triggering.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1344">line 1344</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1357">line 1357</a>
 			</li>
 		</ul>
 	</dd>
@@ -7577,16 +7630,7 @@ otherwise the brush layer will block tooltip triggering.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default title function shows &quot;key: value&quot;
-chart.title(function(d) { return d.key + &#x27;: &#x27; + d.value; });
-// title function has access to the standard d3 data binding and can get quite complicated
-chart.title(function(p) {
-   return p.key.getFullYear()
-       + &#x27;\n&#x27;
-       + &#x27;Index Gain: &#x27; + numberFormat(p.value.absGain) + &#x27;\n&#x27;
-       + &#x27;Index Gain in Percentage: &#x27; + numberFormat(p.value.percentageGain) + &#x27;%\n&#x27;
-       + &#x27;Fluctuation / Index Ratio: &#x27; + numberFormat(p.value.fluctuationPercentage) + &#x27;%&#x27;;
-});</pre>
+    <pre class="sunlight-highlight-javascript">// default title function shows &quot;key: value&quot;chart.title(function(d) { return d.key + &#x27;: &#x27; + d.value; });// title function has access to the standard d3 data binding and can get quite complicatedchart.title(function(p) {   return p.key.getFullYear()       + &#x27;\n&#x27;       + &#x27;Index Gain: &#x27; + numberFormat(p.value.absGain) + &#x27;\n&#x27;       + &#x27;Index Gain in Percentage: &#x27; + numberFormat(p.value.percentageGain) + &#x27;%\n&#x27;       + &#x27;Fluctuation / Index Ratio: &#x27; + numberFormat(p.value.fluctuationPercentage) + &#x27;%&#x27;;});</pre>
 
 
     
@@ -7721,7 +7765,7 @@ chart.title(function(p) {
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-648">line 648</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-653">line 653</a>
 			</li>
 		</ul>
 	</dd>
@@ -7902,7 +7946,7 @@ chart.title(function(p) {
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-632">line 632</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-637">line 637</a>
 			</li>
 		</ul>
 	</dd>
@@ -8013,7 +8057,7 @@ chart.title(function(p) {
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-614">line 614</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-619">line 619</a>
 			</li>
 		</ul>
 	</dd>
@@ -8137,7 +8181,7 @@ function. This type of element will be turned off automatically if the filter is
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-591">line 591</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-596">line 596</a>
 			</li>
 		</ul>
 	</dd>
@@ -8203,8 +8247,7 @@ function. This type of element will be turned off automatically if the filter is
 When enabled, <code>viewBox</code> will be set on the svg root element instead of <code>width</code> and <code>height</code>.
 Requires that the chart aspect ratio be defined using chart.width(w) and chart.height(h).</p>
 <p>This will maintain the aspect ratio while enabling the chart to resize responsively to the
-space given to the chart using CSS. For example, the chart can use <code>width: 100%; height:
-100%</code> or absolute positioning to resize to its parent div.</p>
+space given to the chart using CSS. For example, the chart can use <code>width: 100%; height: 100%</code> or absolute positioning to resize to its parent div.</p>
 <p>Since the text will be sized as if the chart is drawn according to the width and height, and
 will be resized if the chart is any other size, you need to set the chart width and height so
 that the text looks good. In practice, 600x400 seems to work pretty well for most charts.</p>
@@ -8503,7 +8546,7 @@ coordinate chart.</p>
 		<ul class="dummy">
 			<li>
 				<a href="base-mixin.js.html">base-mixin.js</a>,
-				 <a href="base-mixin.js.html#sunlight-1-line-1276">line 1276</a>
+				 <a href="base-mixin.js.html#sunlight-1-line-1289">line 1289</a>
 			</li>
 		</ul>
 	</dd>
@@ -8555,10 +8598,7 @@ coordinate chart.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// default value accessor
-chart.valueAccessor(function(d) { return d.value; });
-// custom value accessor for a multi-value crossfilter reduction
-chart.valueAccessor(function(p) { return p.value.percentageGain; });</pre>
+    <pre class="sunlight-highlight-javascript">// default value accessorchart.valueAccessor(function(d) { return d.value; });// custom value accessor for a multi-value crossfilter reductionchart.valueAccessor(function(p) { return p.value.percentageGain; });</pre>
 
 
     
@@ -8749,11 +8789,7 @@ chart.valueAccessor(function(p) { return p.value.percentageGain; });</pre>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Default width
-chart.width(function (element) {
-    var width = element &amp;&amp; element.getBoundingClientRect &amp;&amp; element.getBoundingClientRect().width;
-    return (width &amp;&amp; width &gt; chart.minWidth()) ? width : chart.minWidth();
-});</pre>
+    <pre class="sunlight-highlight-javascript">// Default widthchart.width(function (element) {    var width = element &amp;&amp; element.getBoundingClientRect &amp;&amp; element.getBoundingClientRect().width;    return (width &amp;&amp; width &gt; chart.minWidth()) ? width : chart.minWidth();});</pre>
 
 
     
@@ -8807,13 +8843,13 @@ chart.width(function (element) {
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

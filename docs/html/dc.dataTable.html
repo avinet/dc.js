@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -110,13 +117,13 @@
     <div class="description">
         <p>The data table is a simple widget designed to list crossfilter focused data set (rows being
 filtered) in a good old tabular fashion.</p>
-<p>Note: Unlike other charts, the data table (and data grid chart) use the <a href="dc.dataTable.html#group">group</a> attribute as a
-keying function for <a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Arrays.md#nest">nesting</a> the data
-together in groups.  Do not pass in a crossfilter group as this will not work.</p>
-<p>Another interesting feature of the data table is that you can pass a crossfilter group to the <code>dimension</code>, as
+<p>An interesting feature of the data table is that you can pass a crossfilter group to the <code>dimension</code>, as
 long as you specify the <a href="dc.dataTable.html#order">order</a> as <code>d3.descending</code>, since the data
 table will use <code>dimension.top()</code> to fetch the data in that case, and the method is equally
 supported on the crossfilter group as the crossfilter dimension.</p>
+<p>Note: Formerly the data table (and data grid chart) used the <a href="dc.dataTable.html#group">group</a> attribute as a
+keying function for <a href="https://github.com/d3/d3-collection/blob/master/README.md#nest">nesting</a> the data
+together in sections.  This was confusing so it has been renamed to <code>section</code>, although <code>group</code> still works.</p>
 <p>Examples:</p>
 <ul>
 <li><a href="http://dc-js.github.com/dc.js/">Nasdaq 100 Index</a></li>
@@ -191,7 +198,7 @@ supported on the crossfilter group as the crossfilter dimension.</p>
             
 
             <td class="description last"><p>Any valid
-<a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Selections.md#selecting-elements">d3 single selector</a> specifying
+<a href="https://github.com/d3/d3-selection/blob/master/README.md#select">d3 single selector</a> specifying
 a dom block element such as a div; or a dom element or d3 selection.</p></td>
         </tr>
 
@@ -480,7 +487,7 @@ to see how to implement the pagination user interface using <code>beginSlice</co
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-238">line 238</a>
+				 <a href="data-table.js.html#sunlight-1-line-258">line 258</a>
 			</li>
 		</ul>
 	</dd>
@@ -559,7 +566,6 @@ headers.</p>
     function(d) { return d.volume; }
 ]);
 </code></pre>
-
 <p>In the second method, you can list the columns to read from the data without specifying it as
 a function, except where necessary (ie, computed columns).  Note the data element name is
 capitalized when displayed in the table header. You can also mix in functions as necessary,
@@ -577,7 +583,6 @@ using the third <code>{label, format}</code> form, as shown below.</p>
     "volume"   // d["volume"], ie, a field accessor; capitalized automatically
 ]);
 </code></pre>
-
 <p>In the third example, we specify all fields using the <code>{label, format}</code> method:</p>
 <pre><code>chart.columns([
     {
@@ -602,7 +607,6 @@ using the third <code>{label, format}</code> form, as shown below.</p>
     }
 ]);
 </code></pre>
-
 <p>You may wish to override the dataTable functions <code>_doColumnHeaderCapitalize</code> and
 <code>_doColumnHeaderFnToString</code>, which are used internally to translate the column information or
 function into a displayed header. The first one is used on the &quot;string&quot; column specifier; the
@@ -728,7 +732,7 @@ data, unformatted.</p>
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-277">line 277</a>
+				 <a href="data-table.js.html#sunlight-1-line-297">line 297</a>
 			</li>
 		</ul>
 	</dd>
@@ -906,7 +910,7 @@ widget. Useful when implementing pagination. See <a href="dc.dataTable.html#begi
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-260">line 260</a>
+				 <a href="data-table.js.html#sunlight-1-line-280">line 280</a>
 			</li>
 		</ul>
 	</dd>
@@ -970,10 +974,7 @@ widget. Useful when implementing pagination. See <a href="dc.dataTable.html#begi
 
     
     <div class="description">
-        <p>Get or set the group function for the data table. The group function takes a data row and
-returns the key to specify to <a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Arrays.md#d3_nest">d3.nest</a>
-to split rows into groups.</p>
-<p>Do not pass in a crossfilter group as this will not work.</p>
+        <p>Backward-compatible synonym for <a href="dc.dataTable.html#section">section</a>.</p>
     </div>
     
 
@@ -1070,7 +1071,7 @@ to split rows into groups.</p>
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-205">line 205</a>
+				 <a href="data-table.js.html#sunlight-1-line-230">line 230</a>
 			</li>
 		</ul>
 	</dd>
@@ -1118,14 +1119,6 @@ to split rows into groups.</p>
 
 
         
-
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">// group rows by the value of their field
-chart
-    .group(function(d) { return d.field; })</pre>
-
 
     
 </dd>
@@ -1260,7 +1253,7 @@ chart
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-385">line 385</a>
+				 <a href="data-table.js.html#sunlight-1-line-405">line 405</a>
 			</li>
 		</ul>
 	</dd>
@@ -1272,9 +1265,9 @@ chart
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Arrays.md#d3_ascending">d3.ascending</a></li>
+			<li><a href="https://github.com/d3/d3-array/blob/master/README.md#ascending">d3.ascending</a></li>
 			
-			<li><a href="https://github.com/d3/d3-3.x-api-reference/blob/master/Arrays.md#d3_descending">d3.descending</a></li>
+			<li><a href="https://github.com/d3/d3-array/blob/master/README.md#descending">d3.descending</a></li>
 			</ul>
 	</dd>
 	
@@ -1331,6 +1324,176 @@ chart
             
 <hr>
 <dt>
+    <h4 class="name" id="section"><span class="type-signature"></span>section(section)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Get or set the section function for the data table. The section function takes a data row and
+returns the key to specify to <a href="https://github.com/d3/d3-collection/blob/master/README.md#nest">d3.nest</a>
+to split rows into sections. By default there will be only one section with no name.</p>
+<p>Set <a href="dc.dataTable.html#showSections">showSections</a> to false to hide the section headers</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>section</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function taking a row of data and returning the nest key.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="data-table.js.html">data-table.js</a>,
+				 <a href="data-table.js.html#sunlight-1-line-205">line 205</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+|
+
+<span class="param-type"><a href="dc.dataTable.html">dc.dataTable</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">// section rows by the value of their fieldchart    .section(function(d) { return d.field; })</pre>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="showGroups"><span class="type-signature"></span>showGroups( [showGroups])</h4>
     
     
@@ -1339,8 +1502,7 @@ chart
 
     
     <div class="description">
-        <p>Get or set if group rows will be shown. The dataTable <a href="dc.dataTable.html#group">group</a>
-function must be specified even if groups are not shown.</p>
+        <p>Backward-compatible synonym for <a href="dc.dataTable.html#showSections">showSections</a>.</p>
     </div>
     
 
@@ -1457,7 +1619,188 @@ function must be specified even if groups are not shown.</p>
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-406">line 406</a>
+				 <a href="data-table.js.html#sunlight-1-line-446">line 446</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+|
+
+<span class="param-type"><a href="dc.dataTable.html">dc.dataTable</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="showSections"><span class="type-signature"></span>showSections( [showSections])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Get or set if section header rows will be shown.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>showSections</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="data-table.js.html">data-table.js</a>,
+				 <a href="data-table.js.html#sunlight-1-line-426">line 426</a>
 			</li>
 		</ul>
 	</dd>
@@ -1509,9 +1852,7 @@ function must be specified even if groups are not shown.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">chart
-    .group([value], [name])
-    .showGroups(true|false);</pre>
+    <pre class="sunlight-highlight-javascript">chart    .section([value], [name])    .showSections(true|false);</pre>
 
 
     
@@ -1646,7 +1987,7 @@ function must be specified even if groups are not shown.</p>
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-222">line 222</a>
+				 <a href="data-table.js.html#sunlight-1-line-242">line 242</a>
 			</li>
 		</ul>
 	</dd>
@@ -1828,7 +2169,7 @@ particular field to be sorted by.</p>
 		<ul class="dummy">
 			<li>
 				<a href="data-table.js.html">data-table.js</a>,
-				 <a href="data-table.js.html#sunlight-1-line-364">line 364</a>
+				 <a href="data-table.js.html#sunlight-1-line-384">line 384</a>
 			</li>
 		</ul>
 	</dd>
@@ -1880,9 +2221,7 @@ particular field to be sorted by.</p>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">chart.sortBy(function(d) {
-    return d.date;
-});</pre>
+    <pre class="sunlight-highlight-javascript">chart.sortBy(function(d) {    return d.date;});</pre>
 
 
     
@@ -1936,13 +2275,13 @@ particular field to be sorted by.</p>
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

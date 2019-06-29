@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>dc.js Source: chart-ext/bar-chart-grouped.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">dc.js</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="dc.html">dc</a></li><li><a href="dc.chartRegistry.html">dc.chartRegistry</a></li><li><a href="dc.filters.html">dc.filters</a></li><li><a href="dc.printers.html">dc.printers</a></li><li><a href="dc.units.html">dc.units</a></li><li><a href="dc.units.fp.html">dc.units.fp</a></li><li><a href="dc.utils.html">dc.utils</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: chart-ext/bar-chart-grouped.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+   * Concrete grouped bar chart implementation.
+   *
+   * @name groupedBarChart
+   * @param {String|node|d3.selection} parent - Any valid
+   * @param {String} [chartGroup] - The name of the chart group this chart instance should be placed in.
+   * @return {dc.barChartGrouped}
+   */
+dc.barChartGrouped = function (parent, chartGroup) {
+    var _g;
+  
+    var _width = 100;
+    var _height = 100;
+  
+    var _chartWidth = _width;
+    var _chartHeight = _height;
+  
+    var _chart = dc.marginMixin(dc.baseMixin({}));
+  
+    // Set standard margins
+    _chart.margins().top = 20;
+    _chart.margins().right = 20;
+    _chart.margins().bottom = 40;
+    _chart.margins().left = 40;
+  
+    var _valueLabelFormat = d3.format(',.0f');
+    var _yAxisLabelFormat = d3.format(',.0f');
+    var _xAxisLabel;
+    var _yAxisLabel;
+    var _yAxisMinValue = 0;
+    var _yAxisMaxValue;
+    var _chartArea;
+    var _chartData;
+    var _groupNames;
+    var _yScale;
+    var _colors;
+    var _highlightVariables = [];
+    var _highlightColor = '#ff0000';
+  
+    _chart.highlightColor = function (highlightColor) {
+        _highlightColor = highlightColor;
+        return _chart;
+    };
+  
+    _chart.highlightVariables = function (highlightVariables) {
+        _highlightVariables = highlightVariables;
+        return _chart;
+    };
+  
+    var _seriesSort = function (d) {
+        return d;
+    };
+  
+    _chart.colors = function (colorFunction) {
+        if (typeof colorFunction === 'function') {
+            _colors = colorFunction;
+        }
+        return _chart;
+    };
+  
+    _chart.yAxisLabelFormat = function (labelFmt) {
+        if (labelFmt !== undefined) {
+            _yAxisLabelFormat = labelFmt;
+        } else {
+            return _yAxisLabelFormat;
+        }
+        return _chart;
+    };
+  
+    _chart.yAxisMinValue = function (value) {
+        if (value) {
+            _yAxisMinValue = value;
+        }
+        return _chart;
+    };
+  
+    _chart.yAxisMaxValue = function (value) {
+        if (value) {
+            _yAxisMaxValue = value;
+        }
+        return _chart;
+    };
+  
+    var _valueAccessor = function (d) {
+        return d.value;
+    };
+  
+    _chart.valueAccessor = function (valueAccessor) {
+        if (valueAccessor === undefined) {
+            return _valueAccessor;
+        } else {
+            _valueAccessor = valueAccessor;
+        }
+        return _chart;
+    };
+  
+    _chart.width = function (width) {
+        if (width === undefined) {
+            return _width;
+        } else {
+            _width = width;
+        }
+        return _chart;
+    };
+  
+    _chart.height = function (height) {
+        if (height === undefined) {
+            return _height;
+        } else {
+            _height = height;
+        }
+        return _chart;
+    };
+  
+    _chart.xAxisLabel = function (title) {
+        _xAxisLabel = title;
+        return _chart;
+    };
+  
+    _chart.yAxisLabel = function (title) {
+        _yAxisLabel = title;
+        return _chart;
+    };
+  
+    _chart.seriesSort = function (seriesSort) {
+        if (typeof seriesSort === 'function') {
+            _seriesSort = seriesSort;
+        } else {
+            return _seriesSort;
+        }
+    };
+  
+    _chart.parseGroup = function (inputGroup) {
+        var tmpObj = {};
+        var keys = [];
+        var subKeys = [];
+        var _data = [];
+  
+        inputGroup.all()
+              .map(function (d) {
+                  if (keys.indexOf(d.key[0]) === -1) {
+                      keys.push(d.key[0]);
+                  }
+                  if (subKeys.indexOf(d.key[1]) === -1) {
+                      subKeys.push(d.key[1]);
+                  }
+                  tmpObj[d.key[0]] = tmpObj[d.key[0]] || {};
+                  tmpObj[d.key[0]][d.key[1]] = {
+                      value: _chart.valueAccessor()(d),
+                      order: d.key[3]
+                  };
+              });
+  
+        keys.map(function (key) {
+            var group = {
+                key: key,
+                groupData: []
+            };
+  
+            subKeys.map(function (subKey) {
+                var item = tmpObj[key][subKey];
+                group.groupData.push({
+                    name: subKey,
+                    value: item.value,
+                    order: item.order
+                });
+            });
+  
+            group.groupData.sort(function (a, b) {
+                if (a.order > b.order) {
+                    return 1;
+                } else if (a.order &lt; b.order) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+  
+            _data.push(group);
+        });
+  
+        if (_chart.sortArray) {
+            var result = [];
+            _chart.sortArray.forEach(function (key) {
+                var found = false;
+                _data = _data.filter(function (item) {
+                    if (!found &amp;&amp; item.key === key) {
+                        result.push(item);
+                        found = true;
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+            });
+  
+            _data = result;
+        }
+  
+        return _data;
+    };
+  
+    _chart.data(function (group) {
+        return _chart.parseGroup(group);
+    });
+  
+    function getChartData () {
+        _chartData = _chart.data();
+        if (_chartData.length > 0) {
+            _groupNames = _chartData[0]
+                  .groupData.map(function (d) {
+                      return d.name;
+                  });
+        }
+    }
+  
+    _chart._doRender = function () {
+        _chart.resetSvg();
+        _g = _chart.svg();
+        drawChart();
+        return _chart;
+    };
+  
+    _chart._doRedraw = function () {
+        getChartData();
+        updateValues();
+        return _chart;
+    };
+  
+    function calculateMinMax () {
+        _yAxisMinValue = _yAxisMinValue || 0;
+        _yAxisMaxValue = _yAxisMaxValue || 0;
+  
+        var min = d3.min(_chartData, function (d) {
+            return d3.min(d.groupData, function (d) {
+                return d.value;
+            });
+        });
+  
+        var max = d3.max(_chartData, function (d) {
+            return d3.max(d.groupData, function (d) {
+                return d.value;
+            });
+        });
+  
+        if (min > _yAxisMinValue) {
+            min = _yAxisMinValue;
+        }
+  
+        if (max &lt; _yAxisMaxValue) {
+            max = _yAxisMaxValue;
+        }
+  
+        return {
+            min: min,
+            max: max
+        };
+    }
+  
+    function updateValues () {
+        var chartGroup2 = _chartArea.selectAll('.chartGroup')
+              .data(_chartData);
+  
+        var domain = calculateMinMax();
+  
+        chartGroup2.selectAll('text')
+              .data(function (d) {
+                  return d.groupData;
+              })
+              .text(function (d) {
+                  if (+d.value > 0) {
+                      return _valueLabelFormat(+d.value);
+                  } else {
+                      return '';
+                  }
+              })
+              .transition()
+              .duration(_chart.transitionDuration())
+              .attr('y', function (d) {
+                  return _yScale(Math.max(0, d.value));
+              })
+              .style('fill', '#000000');
+  
+        chartGroup2.selectAll('rect')
+              .data(function (d) {
+                  return d.groupData;
+              })
+              .transition()
+              .duration(_chart.transitionDuration())
+              .attr('y', function (d) {
+                  return _yScale(Math.max(0, d.value));
+              })
+              .attr('height', function (d) {
+                  return Math.abs(_yScale(d.value - Math.max(0, domain.min)) - _yScale(0));
+              });
+  
+        // move x-axis text to the bottom of the chart
+        if (domain.min &lt; 0) {
+            _chartArea
+          .selectAll('.x.axis text')
+          .attr('dy', _yScale(0));
+        }
+    }
+  
+    function drawChart () {
+        _chartWidth = _chart.width() - _chart.margins().left - _chart.margins().right;
+  
+        _chartHeight = _chart.height() - _chart.margins().top - _chart.margins().bottom;
+  
+        // Data here
+        getChartData();
+  
+        var domain = calculateMinMax();
+  
+        if (_chartData.length === 0) {
+            return;
+        }
+  
+        var x0 = d3.scale.ordinal()
+              .rangeRoundBands([0, _chartWidth], 0.15);
+  
+        var x1 = d3.scale.ordinal();
+  
+        _yScale = d3.scale.linear()
+              .range([_chartHeight, 0]);
+  
+        _chart.y = function () {
+            return function (value) {
+                return _yScale(value);
+            };
+        };
+  
+        var color = _colors;
+  
+        var xAxis = d3.svg.axis()
+              .scale(x0)
+              .orient('bottom');
+  
+        var yAxis = d3.svg.axis()
+              .scale(_yScale)
+              .orient('left')
+              .tickFormat(_yAxisLabelFormat);
+  
+        _chartArea = _g
+              .attr('width', _chart.width())
+              .attr('height', _chart.height())
+              .append('g')
+              .attr('class', 'chart-body')
+              .attr('transform', 'translate(' + _chart.margins().left + ',' + _chart.margins().top + ')');
+  
+        x0.domain(_chartData.map(function (d) {
+            return d.key;
+        }));
+  
+        x1.domain(_groupNames)
+              .rangeRoundBands([0,
+                                x0.rangeBand()
+              ]);
+  
+        _yScale.domain([
+            domain.min,
+            domain.max
+        ]);
+  
+        // X axis title
+        _chartArea.append('g')
+        .attr('class', 'x-axis-label x-label')
+        .append('text')
+        .attr('x', -_chart.margins().right + (_chartWidth / 2))
+        .attr('y', _chartHeight + _chart.margins().bottom - 10)
+        .text(_xAxisLabel);
+  
+        // Y axis title
+        _chartArea.append('g')
+        .attr('class', 'y-axis-label y-label')
+        .append('text')
+        .attr('x', -(_chartHeight / 2))
+        .attr('y', -_chart.margins().left + 15)
+        .attr('transform', 'rotate(-90)')
+        .text(_yAxisLabel);
+  
+        // Add axis
+        _chartArea.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + _yScale(Math.max(0, domain.min)) + ')')
+        .call(xAxis);
+  
+        _chartArea.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .append('text');
+  
+        // Add group bars
+        var chartGroup = _chartArea.selectAll('.chartGroup')
+        .data(_chartData)
+        .enter()
+        .append('g')
+        .attr('class', 'chartGroup')
+        .attr('transform', function (d) {
+            return 'translate(' + x0(d.key) + ',0)';
+        });
+  
+        chartGroup.selectAll('rect')
+        .data(function (d) {
+            for (var i = 0; i &lt; d.groupData.length; i++) {
+                d.groupData[i].key = d.key;
+            }
+            return d.groupData;
+        })
+        .enter()
+        .append('rect')
+        .style('fill', function (d) {
+            if (_highlightVariables.indexOf(d.key) !== -1) {
+                return _highlightColor;
+            } else {
+                return color(d.name);
+            }
+        })
+        .attr('width', x1.rangeBand())
+        .attr('x', function (d) {
+            return x1(d.name);
+        })
+        .append('title')
+        .text(function (d) {
+            return d.name + ': ' + d.value;
+        });
+        updateValues();
+    }
+  
+    return _chart.anchor(parent, chartGroup);
+};
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
+	
+		on Sat Jun 29th 2019
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

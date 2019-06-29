@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>dc.js - Bar Chart Example</title>
+    <title>dc.js - Single Selection in a Bar Chart</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
@@ -14,17 +14,19 @@
 
 <div id="test">
   <div>
-    <a class="reset" style="visibility: hidden" href="javascript:chart.filter(null).redrawGroup()">reset</a>
+    <a class="reset" style="visibility: hidden" href="javascript:chart.filterAll();dc.redrawAll();">reset</a>
   </div>
 </div>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
 <script type="text/javascript" src="../js/d3.js"></script>
 <script type="text/javascript" src="../js/crossfilter.js"></script>
 <script type="text/javascript" src="../js/dc.js"></script>
 <script type="text/javascript">
 
 var chart = dc.barChart("#test");
-d3.csv("morley.csv", function(error, experiments) {
+d3.csv("morley.csv").then(function(experiments) {
 
   experiments.forEach(function(x) {
     x.Speed = +x.Speed;
@@ -37,21 +39,14 @@ d3.csv("morley.csv", function(error, experiments) {
   chart
     .width(768)
     .height(480)
-    .x(d3.scale.ordinal())
+    .x(d3.scaleBand())
     .xUnits(dc.units.ordinal)
     .brushOn(true)
     .yAxisLabel("This is the Y Axis!")
     .dimension(runDimension)
     .group(speedSumGroup)
     .controlsUseVisibility(true)
-    .on('pretransition', function(chart) {
-        chart.selectAll("rect.bar").on("click", function (d) {
-            console.log('click');
-            chart.filter(null)
-                .filter(d.data.key)
-                .redrawGroup();
-        });
-    });
+    .addFilterHandler(function(filters, filter) {return [filter];}); // this
     chart.render();
 });
 

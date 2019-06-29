@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>dc.js - Filter Group Example</title>
+    <title>dc.js - Multiple Focus Charts for a Range Chart</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
@@ -15,6 +15,8 @@
 <div id="test3"></div>
 <div id="test4"></div>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
 <script type="text/javascript" src="../js/d3.js"></script>
 <script type="text/javascript" src="../js/crossfilter.js"></script>
 <script type="text/javascript" src="../js/dc.js"></script>
@@ -25,7 +27,7 @@ var chart2 = dc.barChart("#test2");
 var chart3 = dc.barChart("#test3");
 var chart4 = dc.barChart("#test4");
 
-d3.csv("morley.csv", function(error, experiments) {
+d3.csv("morley.csv").then(function(experiments) {
 
     experiments.forEach(function(x) {
         x.Speed = +x.Speed;
@@ -40,7 +42,7 @@ d3.csv("morley.csv", function(error, experiments) {
         chart
             .width(400)
             .height(300)
-            .x(d3.scale.linear().domain([6,20]))
+            .x(d3.scaleLinear().domain([6,20]))
             .brushOn(false)
             .yAxisLabel("This is the Y Axis!")
             .dimension(runDimension)
@@ -88,13 +90,7 @@ d3.csv("morley.csv", function(error, experiments) {
         }
         this._focusCharts = chartlist; // only needed to support the getter above
         this.on('filtered', function (range_chart) {
-            if (!range_chart.filter()) {
-                dc.events.trigger(function () {
-                    chartlist.forEach(function(focus_chart) {
-                        focus_chart.x().domain(focus_chart.xOriginalDomain());
-                    });
-                });
-            } else chartlist.forEach(function(focus_chart) {
+            chartlist.forEach(function(focus_chart) {
                 if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
                     dc.events.trigger(function () {
                         focus_chart.focus(range_chart.filter());

@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li>
+					<li><a href="dc.barChart.html">dc.barChart</a></li><li><a href="dc.boxPlot.html">dc.boxPlot</a></li><li><a href="dc.bubbleChart.html">dc.bubbleChart</a></li><li><a href="dc.bubbleOverlay.html">dc.bubbleOverlay</a></li><li><a href="dc.cboxMenu.html">dc.cboxMenu</a></li><li><a href="dc.compositeChart.html">dc.compositeChart</a></li><li><a href="dc.config.html">dc.config</a></li><li><a href="dc.dataCount.html">dc.dataCount</a></li><li><a href="dc.dataGrid.html">dc.dataGrid</a></li><li><a href="dc.dataTable.html">dc.dataTable</a></li><li><a href="dc.filters.HierarchyFilter.html">dc.filters.HierarchyFilter</a></li><li><a href="dc.filters.RangedFilter.html">dc.filters.RangedFilter</a></li><li><a href="dc.filters.RangedTwoDimensionalFilter.html">dc.filters.RangedTwoDimensionalFilter</a></li><li><a href="dc.filters.TwoDimensionalFilter.html">dc.filters.TwoDimensionalFilter</a></li><li><a href="dc.geoChoroplethChart.html">dc.geoChoroplethChart</a></li><li><a href="dc.heatMap.html">dc.heatMap</a></li><li><a href="dc.htmlLegend.html">dc.htmlLegend</a></li><li><a href="dc.legend.html">dc.legend</a></li><li><a href="dc.lineChart.html">dc.lineChart</a></li><li><a href="dc.logger.html">dc.logger</a></li><li><a href="dc.numberDisplay.html">dc.numberDisplay</a></li><li><a href="dc.pieChart.html">dc.pieChart</a></li><li><a href="dc.rowChart.html">dc.rowChart</a></li><li><a href="dc.scatterPlot.html">dc.scatterPlot</a></li><li><a href="dc.selectMenu.html">dc.selectMenu</a></li><li><a href="dc.seriesChart.html">dc.seriesChart</a></li><li><a href="dc.sunburstChart.html">dc.sunburstChart</a></li><li><a href="dc.textFilterWidget.html">dc.textFilterWidget</a></li>
 				</ul>
 			</li>
 			
@@ -48,6 +48,13 @@
 				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
 					<li><a href="dc.baseMixin.html">dc.baseMixin</a></li><li><a href="dc.bubbleMixin.html">dc.bubbleMixin</a></li><li><a href="dc.capMixin.html">dc.capMixin</a></li><li><a href="dc.colorMixin.html">dc.colorMixin</a></li><li><a href="dc.coordinateGridMixin.html">dc.coordinateGridMixin</a></li><li><a href="dc.marginMixin.html">dc.marginMixin</a></li><li><a href="dc.stackMixin.html">dc.stackMixin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#groupedBarChart">groupedBarChart</a></li><li><a href="global.html#groupedRowChart">groupedRowChart</a></li>
 				</ul>
 			</li>
 			
@@ -165,10 +172,7 @@ return values that are themselves chainable d3 objects.</p></div>
         
             <h3>Example</h3>
             
-    <pre class="sunlight-highlight-javascript">// Example chaining
-chart.width(300)
-     .height(300)
-     .filter(&#x27;sunday&#x27;);</pre>
+    <pre class="sunlight-highlight-javascript">// Example chainingchart.width(300)     .height(300)     .filter(&#x27;sunday&#x27;);</pre>
 
 
         
@@ -195,7 +199,13 @@ chart.width(300)
             <dt><a href="dc.bubbleOverlay.html">bubbleOverlay</a></dt>
             <dd></dd>
         
+            <dt><a href="dc.cboxMenu.html">cboxMenu</a></dt>
+            <dd></dd>
+        
             <dt><a href="dc.compositeChart.html">compositeChart</a></dt>
+            <dd></dd>
+        
+            <dt><a href="dc.config.html">config</a></dt>
             <dd></dd>
         
             <dt><a href="dc.dataCount.html">dataCount</a></dt>
@@ -213,10 +223,16 @@ chart.width(300)
             <dt><a href="dc.heatMap.html">heatMap</a></dt>
             <dd></dd>
         
+            <dt><a href="dc.htmlLegend.html">htmlLegend</a></dt>
+            <dd></dd>
+        
             <dt><a href="dc.legend.html">legend</a></dt>
             <dd></dd>
         
             <dt><a href="dc.lineChart.html">lineChart</a></dt>
+            <dd></dd>
+        
+            <dt><a href="dc.logger.html">logger</a></dt>
             <dd></dd>
         
             <dt><a href="dc.numberDisplay.html">numberDisplay</a></dt>
@@ -235,6 +251,12 @@ chart.width(300)
             <dd></dd>
         
             <dt><a href="dc.seriesChart.html">seriesChart</a></dt>
+            <dd></dd>
+        
+            <dt><a href="dc.sunburstChart.html">sunburstChart</a></dt>
+            <dd></dd>
+        
+            <dt><a href="dc.textFilterWidget.html">textFilterWidget</a></dt>
             <dd></dd>
         </dl>
     
@@ -348,7 +370,7 @@ chart.width(300)
 	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
 	<dd class="tag-default">
 		<ul class="dummy">
-			<li>d3.time.format('%m/%d/%Y')</li>
+			<li>d3.timeFormat('%m/%d/%Y')</li>
 		</ul>
 	</dd>
 	
@@ -450,7 +472,7 @@ immediately.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-258">line 258</a>
+				 <a href="core.js.html#sunlight-1-line-266">line 266</a>
 			</li>
 		</ul>
 	</dd>
@@ -582,7 +604,7 @@ immediately.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-180">line 180</a>
+				 <a href="core.js.html#sunlight-1-line-183">line 183</a>
 			</li>
 		</ul>
 	</dd>
@@ -607,6 +629,26 @@ immediately.</p>
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -765,7 +807,7 @@ If no group is provided, the default group <code>dc.constants.DEFAULT_CHART_GROU
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-157">line 157</a>
+				 <a href="core.js.html#sunlight-1-line-159">line 159</a>
 			</li>
 		</ul>
 	</dd>
@@ -790,6 +832,26 @@ If no group is provided, the default group <code>dc.constants.DEFAULT_CHART_GROU
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -916,7 +978,7 @@ only charts that belong to the default chart group will be reset.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-190">line 190</a>
+				 <a href="core.js.html#sunlight-1-line-194">line 194</a>
 			</li>
 		</ul>
 	</dd>
@@ -941,6 +1003,26 @@ only charts that belong to the default chart group will be reset.</p>
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -1054,7 +1136,7 @@ only charts that belong to the default chart group will be reset.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-169">line 169</a>
+				 <a href="core.js.html#sunlight-1-line-172">line 172</a>
 			</li>
 		</ul>
 	</dd>
@@ -1258,7 +1340,7 @@ can be passed as the second argument to also alter the data being returned.</p>
 		<ul class="dummy">
 			<li>
 				<a href="utils.js.html">utils.js</a>,
-				 <a href="utils.js.html#sunlight-1-line-62">line 62</a>
+				 <a href="utils.js.html#sunlight-1-line-64">line 64</a>
 			</li>
 		</ul>
 	</dd>
@@ -1307,17 +1389,9 @@ can be passed as the second argument to also alter the data being returned.</p>
     
         <h5>Examples</h5>
         
-    <pre class="sunlight-highlight-javascript">var xPluck = dc.pluck(&#x27;x&#x27;);
-var objA = {x: 1};
-xPluck(objA) // 1</pre>
+    <pre class="sunlight-highlight-javascript">var xPluck = dc.pluck(&#x27;x&#x27;);var objA = {x: 1};xPluck(objA) // 1</pre>
 
-    <pre class="sunlight-highlight-javascript">var xPosition = dc.pluck(&#x27;x&#x27;, function (x, i) {
-    // &#x60;this&#x60; is the original datum,
-    // &#x60;x&#x60; is the x property of the datum,
-    // &#x60;i&#x60; is the position in the array
-    return this.radius + x;
-});
-dc.selectAll(&#x27;.circle&#x27;).data(...).x(xPosition);</pre>
+    <pre class="sunlight-highlight-javascript">var xPosition = dc.pluck(&#x27;x&#x27;, function (x, i) {    // &#x60;this&#x60; is the original datum,    // &#x60;x&#x60; is the x property of the datum,    // &#x60;i&#x60; is the position in the array    return this.radius + x;});dc.selectAll(&#x27;.circle&#x27;).data(...).x(xPosition);</pre>
 
 
     
@@ -1447,7 +1521,7 @@ from scratch.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-238">line 238</a>
+				 <a href="core.js.html#sunlight-1-line-245">line 245</a>
 			</li>
 		</ul>
 	</dd>
@@ -1472,6 +1546,26 @@ from scratch.</p>
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -1598,7 +1692,7 @@ not given then only charts that belong to the default chart group will be reset.
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-204">line 204</a>
+				 <a href="core.js.html#sunlight-1-line-209">line 209</a>
 			</li>
 		</ul>
 	</dd>
@@ -1623,6 +1717,26 @@ not given then only charts that belong to the default chart group will be reset.
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -1781,7 +1895,7 @@ If no group is provided, the default group <code>dc.constants.DEFAULT_CHART_GROU
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-145">line 145</a>
+				 <a href="core.js.html#sunlight-1-line-146">line 146</a>
 			</li>
 		</ul>
 	</dd>
@@ -1806,6 +1920,26 @@ If no group is provided, the default group <code>dc.constants.DEFAULT_CHART_GROU
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -1932,7 +2066,7 @@ charts that belong to the default chart group will be re-rendered.</p>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-220">line 220</a>
+				 <a href="core.js.html#sunlight-1-line-226">line 226</a>
 			</li>
 		</ul>
 	</dd>
@@ -1957,6 +2091,26 @@ charts that belong to the default chart group will be re-rendered.</p>
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
@@ -2214,7 +2368,7 @@ elements are needed)</p></td>
 		<ul class="dummy">
 			<li>
 				<a href="core.js.html">core.js</a>,
-				 <a href="core.js.html#sunlight-1-line-268">line 268</a>
+				 <a href="core.js.html#sunlight-1-line-276">line 276</a>
 			</li>
 		</ul>
 	</dd>
@@ -2314,13 +2468,13 @@ elements are needed)</p></td>
 
 
 	<span class="copyright">
-	dc.js Copyright © 2012-2016 Copyright 2012-2016 Nick Zhu & the dc.js Developers
+	dc.js Copyright © 2012-2018 Nick Zhu & the dc.js Developers
 	</span>
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a>
 	
-		on Mon Jul 10th 2017
+		on Sat Jun 29th 2019
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

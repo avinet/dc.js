@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>dc.js - Filtering Example</title>
+    <title>dc.js - Removing Empty Bars</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
@@ -20,6 +20,8 @@
 <div id="chart-hist-spend"></div>
 <div id="chart-row-spenders"></div>
 
+    <script type="text/javascript" src="../js/promise-polyfill.js"></script>
+    <script type="text/javascript" src="../js/fetch.umd.js"></script>
 <script type="text/javascript" src="../js/d3.js"></script>
 <script type="text/javascript" src="../js/crossfilter.js"></script>
 <script type="text/javascript" src="../js/dc.js"></script>
@@ -29,7 +31,7 @@ var yearRingChart   = dc.pieChart("#chart-ring-year"),
     spendHistChart  = dc.barChart("#chart-hist-spend"),
     spenderRowChart = dc.rowChart("#chart-row-spenders");
 
-// use static or load via d3.csv("spendData.csv", function(error, spendData) {/* do stuff */});
+// use static or load via d3.csv("spendData.csv").then(function(spendData) {/* do stuff */});
 var spendData = [
     {Name: 'Mr A', Spent: '$40', Year: 2011},
     {Name: 'Mr B', Spent: '$10', Year: 2011},
@@ -75,7 +77,7 @@ spendHistChart
     .width(300).height(200)
     .dimension(spendDim)
     .group(nonEmptyHist)
-    .x(d3.scale.ordinal())
+    .x(d3.scaleBand())
     .xUnits(dc.units.ordinal)
     .elasticX(true)
     .elasticY(true);

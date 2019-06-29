@@ -1,8 +1,7 @@
 //# dc.js Getting Started and How-To Guide
 'use strict';
 
-/* jshint globalstrict: true */
-/* global dc,d3,crossfilter,colorbrewer */
+/* global dc,d3,crossfilter */
 
 // ### Create Chart Objects
 
@@ -32,9 +31,10 @@ var nasdaqTable = dc.dataTable('.dc-data-table');
 // set on the chart (e.g. slice selection for pie chart and brush
 // selection for bar chart). Enable this with `chart.turnOnControls(true)`
 
-// dc.js >=2.1 uses `visibility: hidden` to hide/show controls without
-// disrupting the layout. To return the old `display: none` behavior,
-// set `chart.controlsUseVisibility(false)` and use that style instead.
+// By default, dc.js >=2.1 uses `display: none` to control whether or not chart
+// controls are shown. To use `visibility: hidden` to hide/show controls
+// without disrupting the layout, set `chart.controlsUseVisibility(true)`.
+
     <div id='chart'>
        <a class='reset'
           href='javascript:myChart.filterAll();dc.redrawAll();'
@@ -55,18 +55,20 @@ var nasdaqTable = dc.dataTable('.dc-data-table');
 //favorite javascript library
 //
 //```javascript
-//d3.csv('data.csv', function(data) {...});
-//d3.json('data.json', function(data) {...});
+//d3.csv('data.csv').then(function(data) {...});
+//d3.json('data.json').then(function(data) {...});
 //jQuery.getJson('data.json', function(data){...});
 //```
-d3.csv('ndx.csv', function (data) {
+d3.csv('ndx.csv').then(function (data) {
     // Since its a csv file we need to format the data a bit.
-    var dateFormat = d3.time.format('%m/%d/%Y');
+    var dateFormatSpecifier = '%m/%d/%Y';
+    var dateFormat = d3.timeFormat(dateFormatSpecifier);
+    var dateFormatParser = d3.timeParse(dateFormatSpecifier);
     var numberFormat = d3.format('.2f');
 
     data.forEach(function (d) {
-        d.dd = dateFormat.parse(d.date);
-        d.month = d3.time.month(d.dd); // pre-calculate month for better performance
+        d.dd = dateFormatParser(d.date);
+        d.month = d3.timeMonth(d.dd); // pre-calculate month for better performance
         d.close = +d.close; // coerce to number
         d.open = +d.open;
     });
@@ -79,7 +81,7 @@ d3.csv('ndx.csv', function (data) {
 
     // Dimension by year
     var yearlyDimension = ndx.dimension(function (d) {
-        return d3.time.year(d.dd).getFullYear();
+        return d3.timeYear(d.dd).getFullYear();
     });
     // Maintain running tallies by year as filters are applied or removed
     var yearlyPerformanceGroup = yearlyDimension.group().reduce(
@@ -218,12 +220,12 @@ d3.csv('ndx.csv', function (data) {
         //to generate x, y, and radius for each key (bubble) in the group
         .group(yearlyPerformanceGroup)
         // (_optional_) define color function or array for bubbles: [ColorBrewer](http://colorbrewer2.org/)
-        .colors(colorbrewer.RdYlGn[9])
+        .colors(d3.schemeRdYlGn[9])
         //(optional) define color domain to match your data domain if you want to bind data or color
         .colorDomain([-500, 500])
     //##### Accessors
 
-        //Accessor functions are applied to each value returned by the grouping
+    //Accessor functions are applied to each value returned by the grouping
 
         // `.colorAccessor` - the returned value will be passed to the `.colors()` scale to determine a fill color
         .colorAccessor(function (d) {
@@ -243,9 +245,9 @@ d3.csv('ndx.csv', function (data) {
             return p.value.fluctuationPercentage;
         })
         .maxBubbleRelativeSize(0.3)
-        .x(d3.scale.linear().domain([-2500, 2500]))
-        .y(d3.scale.linear().domain([-100, 100]))
-        .r(d3.scale.linear().domain([0, 4000]))
+        .x(d3.scaleLinear().domain([-2500, 2500]))
+        .y(d3.scaleLinear().domain([-100, 100]))
+        .r(d3.scaleLinear().domain([0, 4000]))
         //##### Elastic Scaling
 
         //`.elasticY` and `.elasticX` determine whether the chart should rescale each axis to fit the data.
@@ -388,7 +390,7 @@ d3.csv('ndx.csv', function (data) {
         // (_optional_) set filter brush rounding
         .round(dc.round.floor)
         .alwaysUseRounding(true)
-        .x(d3.scale.linear().domain([-25, 25]))
+        .x(d3.scaleLinear().domain([-25, 25]))
         .renderHorizontalGridLines(true)
         // Customize the filter displayed in the control span
         .filterPrinter(function (filters) {
@@ -409,7 +411,7 @@ d3.csv('ndx.csv', function (data) {
     // [Line Chart](https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md#line-chart)
     moveChart /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
         .renderArea(true)
-        .width(990)
+        .width(300)
         .height(200)
         .transitionDuration(1000)
         .margins({top: 30, right: 50, bottom: 25, left: 40})
@@ -417,9 +419,9 @@ d3.csv('ndx.csv', function (data) {
         .mouseZoomable(true)
     // Specify a "range chart" to link its brush extent with the zoom of the current "focus chart".
         .rangeChart(volumeChart)
-        .x(d3.time.scale().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-        .round(d3.time.month.round)
-        .xUnits(d3.time.months)
+        .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
+        .round(d3.timeMonth.round)
+        .xUnits(d3.timeMonths)
         .elasticY(true)
         .renderHorizontalGridLines(true)
     //##### Legend
@@ -459,10 +461,10 @@ d3.csv('ndx.csv', function (data) {
         .group(volumeByMonthGroup)
         .centerBar(true)
         .gap(1)
-        .x(d3.time.scale().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-        .round(d3.time.month.round)
+        .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
+        .round(d3.timeMonth.round)
         .alwaysUseRounding(true)
-        .xUnits(d3.time.months);
+        .xUnits(d3.timeMonths);
 
     //#### Data Count
 
@@ -480,8 +482,8 @@ d3.csv('ndx.csv', function (data) {
     //```
 
     nasdaqCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
-        .dimension(ndx)
-        .group(all)
+        .crossfilter(ndx)
+        .groupAll(all)
         // (_optional_) `.html` sets different html when some records or all records are selected.
         // `.html` replaces everything in the anchor with the html given using the following function.
         // `%filter-count` and `%total-count` are replaced with the values obtained.
@@ -519,9 +521,8 @@ d3.csv('ndx.csv', function (data) {
 
     nasdaqTable /* dc.dataTable('.dc-data-table', 'chartGroup') */
         .dimension(dateDimension)
-        // Data table does not use crossfilter group but rather a closure
-        // as a grouping function
-        .group(function (d) {
+        // Specify a section function to nest rows of the table
+        .section(function (d) {
             var format = d3.format('02d');
             return d.dd.getFullYear() + '/' + format((d.dd.getMonth() + 1));
         })
@@ -635,7 +636,7 @@ d3.csv('ndx.csv', function (data) {
             // Closure used to retrieve radius value from multi-value group
             .radiusValueAccessor(function(p) {return p.value.fluctuationPercentage;})
             // set radius scale
-            .r(d3.scale.linear().domain([0, 3]))
+            .r(d3.scaleLinear().domain([0, 3]))
             // (_optional_) whether chart should render labels, `default = true`
             .renderLabel(true)
             // (_optional_) closure to generate label per bubble, `default = group.key`
@@ -679,8 +680,7 @@ d3.csv('ndx.csv', function (data) {
 d3.selectAll('#version').text(dc.version);
 
 // Determine latest stable version in the repo via Github API
-d3.json('https://api.github.com/repos/dc-js/dc.js/releases/latest', function (error, latestRelease) {
-    /*jshint camelcase: false */
-    /* jscs:disable */
+d3.json('https://api.github.com/repos/dc-js/dc.js/releases/latest').then(function (latestRelease) {
+    /* eslint camelcase: 0 */
     d3.selectAll('#latest').text(latestRelease.tag_name);
 });
